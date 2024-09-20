@@ -41,3 +41,7 @@ skeleton/debug/**
 
 # Zip files
 *.zip
+
+#bobadas
+skeleton/common
+skeleton/bin

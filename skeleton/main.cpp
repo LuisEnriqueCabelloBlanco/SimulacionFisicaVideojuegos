@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include "Vector3D.h"
+
 std::string display_text = "This is a test";
 
 
@@ -30,10 +32,22 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
+RenderItem* obj;
+RenderItem* objx;
+RenderItem* objy;
+RenderItem* objz;
+
+PxTransform* mtr;
+PxTransform* mtrx;
+PxTransform* mtry;
+PxTransform* mtrz;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
+	Vector3D a;
+	Vector3D b;
+
 	PX_UNUSED(interactive);
 
 	gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
@@ -54,6 +68,27 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+
+	float axisFactor = 10;
+	float sphereRadious = 2;
+
+
+	mtr = new PxTransform({ 0,0,0 });
+	mtrx = new PxTransform({ axisFactor,0,0 });
+	mtry = new PxTransform({ 0,axisFactor,0 });
+	mtrz = new PxTransform({ 0,0,axisFactor });
+
+
+	obj  = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtr, Vector4(1, 1, 1, 1));
+	objx = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtrx, Vector4(1, 0, 0, 1));
+	objy = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtry, Vector4(0, 1, 0, 1));
+	objz = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtrz, Vector4(0, 0, 1, 1));
+
+	RegisterRenderItem(obj);
+	RegisterRenderItem(objx);
+	RegisterRenderItem(objy);
+	RegisterRenderItem(objz);
+
 	}
 
 
@@ -75,6 +110,15 @@ void cleanupPhysics(bool interactive)
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
+
+	DeregisterRenderItem(obj);
+
+	delete mtr;
+	delete obj;
+	delete objx;
+	delete objy;
+	delete objz;
+
 	gScene->release();
 	gDispatcher->release();
 	// -----------------------------------------------------
