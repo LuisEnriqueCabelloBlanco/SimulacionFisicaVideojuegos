@@ -2,7 +2,7 @@
 
 using namespace physx;
 
-Particle::Particle(Vector3& pos, Vector3& Acc):pose(pos),vel(0),acc(Acc)
+Particle::Particle(Vector3& pos, Vector3& Acc,double damp):pose(pos),vel(0),acc(Acc),damping(damp)
 {
 	renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)),&pose,Vector4(1, 0, 0, 1));
 	
@@ -17,7 +17,8 @@ Particle::~Particle()
 
 void Particle::integrate(double dt)
 {
-	vel += acc * dt;
+	vel = vel + acc * dt;
 	pose.p += vel*dt;
-	acc = Vector3(0);
+	//acc = Vector3(0);
+	vel = vel * pow(damping, dt);
 }

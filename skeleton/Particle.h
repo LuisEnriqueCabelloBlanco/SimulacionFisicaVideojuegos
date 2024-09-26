@@ -7,7 +7,7 @@ using namespace physx;
 class Particle
 {
 public:
-	Particle(Vector3& pos,Vector3& acc);
+	Particle(Vector3& pos,Vector3& acc, double damp);
 	~Particle();
 
 	void integrate(double t);
@@ -18,6 +18,8 @@ public:
 
 private:
 	const PxReal PATICLE_SIZE = 1;
+
+	double damping;
 
 	Vector3 acc;
 
