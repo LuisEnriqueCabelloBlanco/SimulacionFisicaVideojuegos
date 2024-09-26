@@ -71,13 +71,13 @@ void initPhysics(bool interactive)
 	float axisFactor = 20;
 	float sphereRadious = 0.5;
 
-	c = new Particle(Vector3(0, 0, 0), Vector3(0), Vector3(0)); c->setColor(Vector4(1.0));
-	x = new Particle(Vector3(axisFactor, 0, 0), Vector3(0), Vector3(0)); x->setColor(Vector4(1, 0, 0, 1));
-	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0), Vector3(0)); y->setColor(Vector4(0, 1, 0, 1));
-	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0), Vector3(0)); z->setColor(Vector4(0, 0, 1, 1));
+	c = new Particle(Vector3(0, 0, 0), Vector3(0)); c->setColor(Vector4(1.0));
+	x = new Particle(Vector3(axisFactor, 0, 0), Vector3(0)); x->setColor(Vector4(1, 0, 0, 1));
+	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0)); y->setColor(Vector4(0, 1, 0, 1));
+	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0)); z->setColor(Vector4(0, 0, 1, 1));
 
 
-	a = new Particle(Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0));
+	a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0));
 
 	}
 
