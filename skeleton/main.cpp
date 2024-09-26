@@ -10,7 +10,9 @@
 
 #include <iostream>
 
-#include "Vector3D.h"
+//#include "Vector3D.h"
+
+#include "Particle.h"
 
 std::string display_text = "This is a test";
 
@@ -32,21 +34,18 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-RenderItem* obj;
-RenderItem* objx;
-RenderItem* objy;
-RenderItem* objz;
+//main particle
+Particle* a;
 
-PxTransform* mtr;
-PxTransform* mtrx;
-PxTransform* mtry;
-PxTransform* mtrz;
+//reference objects
+Particle* c;
+Particle* x;
+Particle* y;
+Particle* z;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
-	Vector3D a;
-	Vector3D b;
 
 	PX_UNUSED(interactive);
 
@@ -69,25 +68,16 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	float axisFactor = 10;
-	float sphereRadious = 2;
+	float axisFactor = 20;
+	float sphereRadious = 0.5;
+
+	c = new Particle(Vector3(0, 0, 0), Vector3(0), Vector3(0)); c->setColor(Vector4(1.0));
+	x = new Particle(Vector3(axisFactor, 0, 0), Vector3(0), Vector3(0)); x->setColor(Vector4(1, 0, 0, 1));
+	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0), Vector3(0)); y->setColor(Vector4(0, 1, 0, 1));
+	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0), Vector3(0)); z->setColor(Vector4(0, 0, 1, 1));
 
 
-	mtr = new PxTransform({ 0,0,0 });
-	mtrx = new PxTransform({ axisFactor,0,0 });
-	mtry = new PxTransform({ 0,axisFactor,0 });
-	mtrz = new PxTransform({ 0,0,axisFactor });
-
-
-	obj  = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtr, Vector4(1, 1, 1, 1));
-	objx = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtrx, Vector4(1, 0, 0, 1));
-	objy = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtry, Vector4(0, 1, 0, 1));
-	objz = new RenderItem(CreateShape(PxSphereGeometry(sphereRadious)), mtrz, Vector4(0, 0, 1, 1));
-
-	RegisterRenderItem(obj);
-	RegisterRenderItem(objx);
-	RegisterRenderItem(objy);
-	RegisterRenderItem(objz);
+	a = new Particle(Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0));
 
 	}
 
@@ -99,6 +89,7 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
+	a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -111,13 +102,13 @@ void cleanupPhysics(bool interactive)
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 
-	DeregisterRenderItem(obj);
+	delete c;
 
-	delete mtr;
-	delete obj;
-	delete objx;
-	delete objy;
-	delete objz;
+	delete x;
+	delete y;
+	delete z;
+
+	delete a;
 
 	gScene->release();
 	gDispatcher->release();
@@ -141,6 +132,26 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case ' ':
 	{
+		break;
+	}
+	case 'I':
+	{
+		a->accelerate(Vector3(0, 0, -1));
+		break;
+	}
+	case 'K':
+	{
+		a->accelerate(Vector3(0, 0, 1));
+		break;
+	}
+	case 'J':
+	{
+		a->accelerate(Vector3(-1, 0, 0));
+		break;
+	}
+	case 'L':
+	{
+		a->accelerate(Vector3(1, 0, 0));
 		break;
 	}
 	default:

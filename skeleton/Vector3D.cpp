@@ -1,7 +1,7 @@
 #include "Vector3D.h"
 #include <cmath>
 
-float Vector3D::magnitude()
+float Vector3D::magnitude() const
 {
     return sqrt(x*x+y*y+z*z);
 }

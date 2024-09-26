@@ -16,7 +16,7 @@ public:
 		return Vector3D(x - v.x, y - v.y, z - v.z);
 	}
 
-	float magnitude();
+	float magnitude() const;
 
 	Vector3D normalize();
 
