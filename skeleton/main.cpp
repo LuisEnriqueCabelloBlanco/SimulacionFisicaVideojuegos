@@ -8,14 +8,17 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
+#include "PhysicScene.h"
+
 #include <iostream>
 
 //#include "Vector3D.h"
 
+
 #include "Particle.h"
 
-std::string display_text = "This is a test";
-
+std::string display_text = "This";
+PhysicScene mPS;
 
 using namespace physx;
 
@@ -33,9 +36,6 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
-
-//main particle
-Particle* a;
 
 //reference objects
 Particle* c;
@@ -76,8 +76,8 @@ void initPhysics(bool interactive)
 	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0),0.5); y->setColor(Vector4(0, 1, 0, 1));
 	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0),0.5); z->setColor(Vector4(0, 0, 1, 1));
 
-
-	a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),1);
+	mPS.initScene();
+	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
 
 	}
 
@@ -89,7 +89,8 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	a->integrate(t);
+	mPS.updateScene(t);
+	//a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -126,37 +127,39 @@ void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 
-	switch(toupper(key))
-	{
-	//case 'B': break;
-	//case ' ':	break;
-	case ' ':
-	{
-		break;
-	}
-	case 'I':
-	{
-		a->accelerate(Vector3(0, 0, -1));
-		break;
-	}
-	case 'K':
-	{
-		a->accelerate(Vector3(0, 0, 1));
-		break;
-	}
-	case 'J':
-	{
-		a->accelerate(Vector3(-1, 0, 0));
-		break;
-	}
-	case 'L':
-	{
-		a->accelerate(Vector3(1, 0, 0));
-		break;
-	}
-	default:
-		break;
-	}
+	mPS.keyPress(key, camera);
+
+	//switch(toupper(key))
+	//{
+	////case 'B': break;
+	////case ' ':	break;
+	//case ' ':
+	//{
+	//	break;
+	//}
+	//case 'I':
+	//{
+	//	a->accelerate(Vector3(0, 0, -1));
+	//	break;
+	//}
+	//case 'K':
+	//{
+	//	a->accelerate(Vector3(0, 0, 1));
+	//	break;
+	//}
+	//case 'J':
+	//{
+	//	a->accelerate(Vector3(-1, 0, 0));
+	//	break;
+	//}
+	//case 'L':
+	//{
+	//	a->accelerate(Vector3(1, 0, 0));
+	//	break;
+	//}
+	//default:
+	//	break;
+	//}
 }
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
