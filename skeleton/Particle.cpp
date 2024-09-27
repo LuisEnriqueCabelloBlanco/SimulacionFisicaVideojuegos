@@ -11,19 +11,32 @@ Particle::Particle(Vector3& pos, Vector3& Acc,double damp):pose(pos),_vel(0),_ac
 	RegisterRenderItem(renderItem);
 }
 
-Particle::Particle(Vector3& pos, double damp, ParticleShape shape, Color color) :pose(pos), _vel(0), _acc(0), _damping(damp)
+Particle::Particle(Vector3& pos, GeometrySpec& geom, double damp, Color color)
+	:pose(pos), _vel(0), _acc(0), _damping(damp)
 {
-	switch (shape)
+	PxShape* pShape;
+
+	switch (geom.shape)
 	{
 	case Particle::SPHERE:
-		renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)), &pose, color);
+		pShape = CreateShape(PxSphereGeometry(geom.sphere.radious));
 		break;
 	case Particle::CUBE:
-		renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)), &pose, color);
+		pShape = CreateShape(PxBoxGeometry(geom.box.x,geom.box.y,geom.box.z));
+		break;
+	case Particle::PLANE:
+		pShape = CreateShape(PxPlaneGeometry());
+		break;
+	case Particle::CAPSULE:
+		pShape = CreateShape(PxCapsuleGeometry(geom.capsule.radius,geom.capsule.halfHeight));
 		break;
 	default:
 		break;
 	}
+
+	renderItem = new RenderItem(pShape,&pose, color);
+
+	RegisterRenderItem(renderItem);
 }
 
 Particle::~Particle()

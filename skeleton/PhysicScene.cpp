@@ -46,7 +46,10 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 }
 void PhysicScene::initScene()
 {
-	addParticle(new Particle(Vector3(0, 0, 0), Vector3(0, 0, 0), 0.98));
+	Particle::GeometrySpec geom;
+	geom.shape = Particle::SPHERE;
+	geom.sphere.radious = 1;
+	addParticle(new Particle(Vector3(0, 0, 0),geom));
 }
 void PhysicScene::addParticle(Particle* par)
 {

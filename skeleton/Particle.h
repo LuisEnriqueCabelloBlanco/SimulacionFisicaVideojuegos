@@ -9,10 +9,39 @@ using Color = Vector4;
 class Particle
 {
 public:
-	enum ParticleShape {SPHERE,CUBE};
+	//struct SphereSpec {
+	//	PxReal radious;
+	//};
+
+
+	enum ParticleShape {SPHERE,CUBE,PLANE,CAPSULE};
+
+	struct GeometrySpec {
+		ParticleShape shape;
+		union {
+			struct SphereSpec{
+				PxReal radious;
+			} sphere;
+
+			struct BoxSpec {
+				PxReal x;
+				PxReal y;
+				PxReal z;
+			} box;
+
+			struct CapsuleSpec {
+				PxReal radius;
+				PxReal halfHeight;
+			} capsule;
+		};
+
+
+	};
+
+
 
 	Particle(Vector3& pos,Vector3& acc, double damp);
-	Particle(Vector3& pos, double damp, ParticleShape shape, Color color);
+	Particle(Vector3& pos, GeometrySpec& geom, double damp = 0.98, Color color = Color(1, 1, 1, 1));
 	~Particle();
 
 	void integrate(double t);

@@ -109,7 +109,6 @@ void cleanupPhysics(bool interactive)
 	delete y;
 	delete z;
 
-	delete a;
 
 	gScene->release();
 	gDispatcher->release();
