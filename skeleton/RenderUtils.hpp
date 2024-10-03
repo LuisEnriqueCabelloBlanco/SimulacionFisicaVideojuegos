@@ -63,5 +63,4 @@ double GetLastTime();
 Camera* GetCamera();
 
 physx::PxShape* CreateShape(const physx::PxGeometry& geo, const physx::PxMaterial* mat = nullptr);
-
 #endif

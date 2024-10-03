@@ -18,7 +18,6 @@
 #include "Particle.h"
 
 std::string display_text = "This";
-PhysicScene mPS;
 
 using namespace physx;
 
@@ -37,11 +36,8 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-//reference objects
-Particle* c;
-Particle* x;
-Particle* y;
-Particle* z;
+PhysicScene* mPS;
+
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -68,15 +64,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	float axisFactor = 20;
-	float sphereRadious = 0.5;
+	mPS = new PhysicScene();
 
-	c = new Particle(Vector3(0, 0, 0), Vector3(0),0.5); c->setColor(Vector4(1.0));
-	x = new Particle(Vector3(axisFactor, 0, 0), Vector3(0),0.5); x->setColor(Vector4(1, 0, 0, 1));
-	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0),0.5); y->setColor(Vector4(0, 1, 0, 1));
-	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0),0.5); z->setColor(Vector4(0, 0, 1, 1));
-
-	mPS.initScene();
+	mPS->initScene();
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
 
 	}
@@ -88,11 +78,12 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-
-	mPS.updateScene(t);
+	mPS->updateScene(t);
 	//a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+
+	mPS->clearParticles();
 }
 
 // Function to clean data
@@ -102,14 +93,6 @@ void cleanupPhysics(bool interactive)
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
-
-	delete c;
-
-	delete x;
-	delete y;
-	delete z;
-
-
 	gScene->release();
 	gDispatcher->release();
 	// -----------------------------------------------------
@@ -119,6 +102,7 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
+	delete mPS;
 	}
 
 // Function called when a key is pressed
@@ -126,7 +110,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 
-	mPS.keyPress(key, camera);
+	mPS->keyPress(key, camera);
 
 	//switch(toupper(key))
 	//{

@@ -4,14 +4,12 @@
 
 using namespace physx;
 
-Particle::Particle(Vector3& pos, Vector3& Acc,double damp):pose(pos),_vel(0),_acc(Acc),_damping(damp)
+Particle::Particle(const Vector3& pos,const Vector3& Acc,double damp):pose(pos),_vel(0),_acc(Acc),_damping(damp)
 {
 	renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)),&pose,Vector4(1, 0, 0, 1));
-	
-	RegisterRenderItem(renderItem);
 }
 
-Particle::Particle(Vector3& pos, GeometrySpec& geom, double damp, Color color)
+Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Color color)
 	:pose(pos), _vel(0), _acc(0), _damping(damp)
 {
 	PxShape* pShape;
@@ -35,12 +33,11 @@ Particle::Particle(Vector3& pos, GeometrySpec& geom, double damp, Color color)
 	}
 
 	renderItem = new RenderItem(pShape,&pose, color);
-
-	RegisterRenderItem(renderItem);
 }
 
 Particle::~Particle()
 {
+	//Si se emplea deregister render item el programa de un error de iterador al cerrarlo
 	DeregisterRenderItem(renderItem);
 	delete renderItem;
 }
@@ -53,17 +50,12 @@ void Particle::integrate(double dt)
 	//acc = Vector3(0);
 	_vel = _vel * pow(_damping, dt);
 #else
-	pose.p += vel * dt;
-	vel = vel + acc * dt;
+	pose.p += _vel * dt;
+	_vel = _vel + _acc * dt;
 	//acc = Vector3(0);
-	vel = vel * pow(damping, dt);
+	_vel = _vel * pow(_damping, dt);
 #endif
 
 
-
-}
-
-void Particle::addForce(Vector3& force)
-{
 
 }
