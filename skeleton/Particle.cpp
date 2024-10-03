@@ -62,3 +62,8 @@ void Particle::integrate(double dt)
 
 
 }
+
+void Particle::addForce(Vector3& force)
+{
+
+}

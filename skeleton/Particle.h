@@ -46,6 +46,8 @@ public:
 
 	void integrate(double t);
 
+	void addForce(Vector3& force);
+
 	inline void accelerate(Vector3& Acc) { _acc = Acc; }
 
 	void setColor(Vector4& color) { renderItem->color = color; }
@@ -57,11 +59,14 @@ private:
 
 	double _damping;
 
+	double mass;
+
 	Vector3 _acc;
 
 	Vector3 _vel;
 
 	PxTransform pose;
+
 
 	RenderItem* renderItem;
 };

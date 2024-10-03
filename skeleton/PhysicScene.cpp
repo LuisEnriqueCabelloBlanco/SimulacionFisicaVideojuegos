@@ -1,5 +1,6 @@
 #include "PhysicScene.h"
 #include "Particle.h"
+
 PhysicScene::PhysicScene()
 {
 
@@ -55,6 +56,18 @@ void PhysicScene::addParticle(Particle* par)
 {
 	particles.push_back(par);
 }
+
+void PhysicScene::createProyectile(Vector3 initPos, Vector3 initForce)
+{
+	Particle::GeometrySpec geom;
+	geom.shape = Particle::SPHERE;
+	geom.sphere.radious = 1;
+	addParticle(new Particle(Vector3(0, 0, 0), geom));
+}
+
+
+
+
 
 void PhysicScene::updateScene(double dt)
 {
