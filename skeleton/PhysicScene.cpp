@@ -1,10 +1,19 @@
 #include "PhysicScene.h"
 #include "Particle.h"
 #include "Proyectile.h"
+#include "core.hpp"
 #include <iostream>
 PhysicScene::PhysicScene()
 {
 
+}
+PhysicScene::PhysicScene(double simulatedSpeed, double realSpeed):gravityValue(-9.8)
+{
+	speedSimulatinFactor = simulatedSpeed/realSpeed;
+	gravitySimulationFactor = pow(speedSimulatinFactor,2);
+	massSimulationFactor = pow((realSpeed / simulatedSpeed),2);
+
+	gravityValue *= gravitySimulationFactor;
 }
 PhysicScene::~PhysicScene()
 {
@@ -53,19 +62,19 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 
 	case '1': 
 	{
-		Proyectile * pr = createProyectile(300, Vector3(0, 0, 0), Vector3(1, 1, 0).getNormalized()*250);
+		Proyectile * pr = createProyectile(0.005, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized()*500);
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
 	case '2':
 	{
-		Proyectile* pr = createProyectile(300, Vector3(0, 0, 0), Vector3(1, 1, 0).getNormalized() * 1800);
+		Proyectile* pr = createProyectile(0.4, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized() * 1800);
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
 	case '3':
 	{
-		Proyectile* pr = createProyectile(300, Vector3(0, 0, 0), Vector3(1, 1, 0).getNormalized() * 300000000);
+		Proyectile* pr = createProyectile(300, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized() * 15000000);
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
@@ -80,16 +89,17 @@ void PhysicScene::initScene()
 
 	Particle::GeometrySpec geom;
 	geom.shape = Particle::CUBE;
-	geom.box.x=2;
-	geom.box.y=2;
-	geom.box.z=2;
-	addParticle(new Particle(Vector3(0, 0, 0),geom));
+	geom.box.x=200;
+	geom.box.y=0.5;
+	geom.box.z=200;
+	addParticle(Vector3(0, 0, 0),geom);
+
 	//Proyectile* pr =createProyectile(1, Vector3(0, 0, 0), Vector3(7, 10, 0));
 	//pr->addForce(Vector3(0, -9.8, 0));
 }
-void PhysicScene::addParticle(Particle* par)
+void PhysicScene::addParticle(const Vector3& pos,const Particle::GeometrySpec& geom,double damping,const Color& color)
 {
-	particles.push_back(par);
+	particles.push_back(new Particle(pos,geom,damping,color));
 }
 
 Proyectile* PhysicScene::createProyectile(double mass,const Vector3& initPos,const Vector3& initSpeed)
@@ -97,7 +107,7 @@ Proyectile* PhysicScene::createProyectile(double mass,const Vector3& initPos,con
 	Particle::GeometrySpec geom;
 	geom.shape = Particle::SPHERE;
 	geom.sphere.radious = 1;
-	Proyectile* proj= new Proyectile(mass,initPos,geom,initSpeed);
+	Proyectile* proj= new Proyectile(1/(mass*massSimulationFactor),initPos,geom,initSpeed*speedSimulatinFactor);
 	addParticle(proj);
 	return proj;
 }

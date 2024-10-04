@@ -3,6 +3,9 @@
 #include "RenderUtils.hpp"
 #include <PxPhysicsAPI.h>
 
+#define SEMIINPLICIT_EULER
+#define VERLET
+
 using namespace physx;
 using Color = Vector4;
 
@@ -58,9 +61,13 @@ protected:
 
 	double _damping;
 
-	Vector3 _acc;
+	bool firstEuler = false;
 
+	Vector3 _acc;
 	Vector3 _vel;
+#ifdef VERLET
+	Vector3 prevPos;
+#endif // !VERLET
 
 	PxTransform pose;
 

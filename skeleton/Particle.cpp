@@ -1,16 +1,16 @@
 #include "Particle.h"
 
-#define SEMIINPLICIT_EULER
+
 
 using namespace physx;
 
-Particle::Particle(const Vector3& pos,const Vector3& Acc,double damp):pose(pos),_vel(0),_acc(Acc),_damping(damp)
+Particle::Particle(const Vector3& pos,const Vector3& Acc,double damp):pose(pos),_acc(Acc),_damping(damp), _vel(0)
 {
 	renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)),&pose,Vector4(1, 0, 0, 1));
 }
 
 Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Color color)
-	:pose(pos), _vel(0), _acc(0), _damping(damp)
+	:pose(pos), _acc(0), _damping(damp),_vel(0)
 {
 	PxShape* pShape;
 
@@ -44,9 +44,22 @@ Particle::~Particle()
 
 void Particle::integrate(double dt)
 {
-#ifdef SEMIINPLICIT_EULER
+
+#ifdef VERLET
+	if (firstEuler&&_acc.magnitudeSquared() > 0) {
+		Vector3 aux = pose.p;
+		pose.p = pose.p * 2 - prevPos + _acc * dt;
+		prevPos = aux;
+	}
+	else {
+		prevPos = pose.p;
+		pose.p += _vel * dt;
+		firstEuler = true;
+	}
+
+#elif defined(SEMIINPLICIT_EULER)
 	_vel = _vel + _acc * dt;
-	pose.p += _vel*dt;
+	pose.p += _vel * dt;
 	//acc = Vector3(0);
 	_vel = _vel * pow(_damping, dt);
 #else
@@ -55,6 +68,7 @@ void Particle::integrate(double dt)
 	//acc = Vector3(0);
 	_vel = _vel * pow(_damping, dt);
 #endif
+	
 
 
 
