@@ -33,15 +33,15 @@ private:
 	/// <param name="sphereRadius">radius of the spheres representing the vertices of the base vectors</param>
 	void makeAxis(float axisFactor, float sphereRadius);
 
-	double gravityValue = 0.0245;
+	double gravityValue;
 
 	double gravitySimulationFactor;
 	double massSimulationFactor;
 	double speedSimulatinFactor;
 
-	std::vector<Particle*>particles;
+	std::list<Particle*>particles;
 
-	std::list<std::vector<Particle*>::iterator> toDelete;
+	std::list<std::list<Particle*>::iterator> toDelete;
 
 	//reference objects
 	Particle* c;

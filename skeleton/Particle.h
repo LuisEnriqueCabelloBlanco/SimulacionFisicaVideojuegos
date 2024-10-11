@@ -4,7 +4,7 @@
 #include <PxPhysicsAPI.h>
 
 #define SEMIINPLICIT_EULER
-#define VERLET
+//#define VERLET
 
 using namespace physx;
 using Color = Vector4;
@@ -15,7 +15,7 @@ public:
 	//struct SphereSpec {
 	//	PxReal radious;
 	//};
-
+	
 
 	enum ParticleShape {SPHERE,CUBE,PLANE,CAPSULE};
 

@@ -29,7 +29,7 @@ PhysicScene::~PhysicScene()
 void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
-	Particle* a = particles[0];
+	Particle* a = (*particles.begin());
 	switch (toupper(key))
 	{
 		//case 'B': break;
@@ -137,7 +137,7 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 
 void PhysicScene::updateScene(double dt)
 {
-	for (std::vector<Particle*>::iterator it = particles.begin(); it != particles.end();++it) {
+	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end();++it) {
 		(*it)->integrate(dt);
 		if ((*it)->getPos().y < -2) {
 			toDelete.push_back(it);

@@ -64,7 +64,7 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	mPS = new PhysicScene(25,500);
+	mPS = new PhysicScene(80,500);
 
 	mPS->initScene();
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
