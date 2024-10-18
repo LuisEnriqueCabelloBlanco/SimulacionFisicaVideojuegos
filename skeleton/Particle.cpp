@@ -16,16 +16,16 @@ Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Col
 
 	switch (geom.shape)
 	{
-	case Particle::SPHERE:
+	case SPHERE:
 		pShape = CreateShape(PxSphereGeometry(geom.sphere.radious));
 		break;
-	case Particle::CUBE:
+	case CUBE:
 		pShape = CreateShape(PxBoxGeometry(geom.box.x,geom.box.y,geom.box.z));
 		break;
-	case Particle::PLANE:
+	case PLANE:
 		pShape = CreateShape(PxPlaneGeometry());
 		break;
-	case Particle::CAPSULE:
+	case CAPSULE:
 		pShape = CreateShape(PxCapsuleGeometry(geom.capsule.radius,geom.capsule.halfHeight));
 		break;
 	default:

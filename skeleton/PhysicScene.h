@@ -4,7 +4,36 @@
 #include "core.hpp"
 #include <list>
 #include "Particle.h"
+
+enum ParticleShape { SPHERE, CUBE, PLANE, CAPSULE };
+
+struct GeometrySpec {
+	ParticleShape shape;
+	union {
+		struct SphereSpec {
+			PxReal radious;
+		} sphere;
+
+		struct BoxSpec {
+			PxReal x;
+			PxReal y;
+			PxReal z;
+		} box;
+
+		struct CapsuleSpec {
+			PxReal radius;
+			PxReal halfHeight;
+		} capsule;
+	};
+
+
+};
+
 class Proyectile;
+
+
+using ObjectsList = std::list<Particle*>;
+using ObjectListIt = std::list<Particle*>::iterator;
 
 class PhysicScene
 {
@@ -17,10 +46,11 @@ public:
 
 	void initScene();
 
-	void addParticle(const Vector3& pos, const Particle::GeometrySpec& geom, double damping = 0.98, const Color& color = Color(1,1,1,1));
+	void addParticle(const Vector3& pos, const GeometrySpec& geom, double damping = 0.98, const Color& color = Color(1,1,1,1));
 	void addParticle(Particle* par) { particles.push_back(par); }
 
 	Proyectile* createProyectile(double mass,const Vector3& initPos, const Vector3& initSpeed);
+	Proyectile* createProyectile(double mass,const Vector3& initPos, const Vector3& initSpeed, const GeometrySpec& geom);
 
 	void clearParticles();
 
@@ -41,7 +71,7 @@ private:
 
 	std::list<Particle*>particles;
 
-	std::list<std::list<Particle*>::iterator> toDelete;
+	std::list<ObjectListIt> toDelete;
 
 	//reference objects
 	Particle* c;

@@ -87,8 +87,8 @@ void PhysicScene::initScene()
 {
 	makeAxis(20,0.5);
 
-	Particle::GeometrySpec geom;
-	geom.shape = Particle::CUBE;
+	GeometrySpec geom;
+	geom.shape = CUBE;
 	geom.box.x=200;
 	geom.box.y=0.5;
 	geom.box.z=200;
@@ -97,17 +97,24 @@ void PhysicScene::initScene()
 	//Proyectile* pr =createProyectile(1, Vector3(0, 0, 0), Vector3(7, 10, 0));
 	//pr->addForce(Vector3(0, -9.8, 0));
 }
-void PhysicScene::addParticle(const Vector3& pos,const Particle::GeometrySpec& geom,double damping,const Color& color)
+
+void PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double damping,const Color& color)
 {
 	particles.push_back(new Particle(pos,geom,damping,color));
 }
 
 Proyectile* PhysicScene::createProyectile(double mass,const Vector3& initPos,const Vector3& initSpeed)
 {
-	Particle::GeometrySpec geom;
-	geom.shape = Particle::SPHERE;
+	GeometrySpec geom;
+	geom.shape = SPHERE;
 	geom.sphere.radious = 1;
-	Proyectile* proj= new Proyectile(1/(mass*massSimulationFactor),initPos,geom,initSpeed*speedSimulatinFactor);
+	Proyectile* proj= createProyectile(mass,initPos,initSpeed,geom);
+	return proj;
+}
+
+Proyectile* PhysicScene::createProyectile(double mass, const Vector3& initPos, const Vector3& initSpeed, const GeometrySpec& geom)
+{
+	Proyectile* proj = new Proyectile(1 / (mass * massSimulationFactor), initPos, geom, initSpeed * speedSimulatinFactor);
 	addParticle(proj);
 	return proj;
 }
@@ -130,9 +137,6 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 	y = new Particle(Vector3(0, axisFactor, 0), Vector3(0), 0.5); y->setColor(Vector4(0, 1, 0, 1));
 	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0), 0.5); z->setColor(Vector4(0, 0, 1, 1));
 }
-
-
-
 
 
 void PhysicScene::updateScene(double dt)

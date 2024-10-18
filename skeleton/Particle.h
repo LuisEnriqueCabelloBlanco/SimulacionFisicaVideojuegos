@@ -2,6 +2,7 @@
 #include "core.hpp"
 #include "RenderUtils.hpp"
 #include <PxPhysicsAPI.h>
+#include "PhysicScene.h"
 
 #define SEMIINPLICIT_EULER
 //#define VERLET
@@ -17,31 +18,7 @@ public:
 	//};
 	
 
-	enum ParticleShape {SPHERE,CUBE,PLANE,CAPSULE};
-
-	struct GeometrySpec {
-		ParticleShape shape;
-		union {
-			struct SphereSpec{
-				PxReal radious;
-			} sphere;
-
-			struct BoxSpec {
-				PxReal x;
-				PxReal y;
-				PxReal z;
-			} box;
-
-			struct CapsuleSpec {
-				PxReal radius;
-				PxReal halfHeight;
-			} capsule;
-		};
-
-
-	};
-
-
+	Particle(){}
 
 	Particle(const Vector3& pos,const Vector3& acc, double damp);
 	Particle(const Vector3& pos,const GeometrySpec& geom, double damp = 0.98, Color color = Color(1, 1, 1, 1));
