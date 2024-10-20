@@ -62,8 +62,9 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 
 	case '1': 
 	{
-		Proyectile * pr = createProyectile(0.005, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized()*500);
-		pr->accelerate(Vector3(0, gravityValue, 0));
+		Proyectile * pr = createProyectile(0.005, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized()*30);
+		pr->accelerate(Vector3(0, gravityValue*4, 0));
+		pr->setDeathFunc([](Particle* pr) {return pr->getPos().y > -1; });
 		break;
 	}
 	case '2':
@@ -114,7 +115,7 @@ Proyectile* PhysicScene::createProyectile(double mass,const Vector3& initPos,con
 
 Proyectile* PhysicScene::createProyectile(double mass, const Vector3& initPos, const Vector3& initSpeed, const GeometrySpec& geom)
 {
-	Proyectile* proj = new Proyectile(1 / (mass * massSimulationFactor), initPos, geom, initSpeed * speedSimulatinFactor);
+	Proyectile* proj = new Proyectile(1 / (mass * massSimulationFactor), initPos, geom, initSpeed * speedSimulatinFactor,1);
 	addParticle(proj);
 	return proj;
 }
@@ -142,8 +143,8 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 void PhysicScene::updateScene(double dt)
 {
 	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end();++it) {
-		(*it)->integrate(dt);
-		if ((*it)->getPos().y < -2) {
+		(*it)->update(dt);
+		if (!(*it)->getAlive()) {
 			toDelete.push_back(it);
 		}
 	}

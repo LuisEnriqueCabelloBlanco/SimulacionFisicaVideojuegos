@@ -5,35 +5,10 @@
 #include <list>
 #include "Particle.h"
 
-enum ParticleShape { SPHERE, CUBE, PLANE, CAPSULE };
-
-struct GeometrySpec {
-	ParticleShape shape;
-	union {
-		struct SphereSpec {
-			PxReal radious;
-		} sphere;
-
-		struct BoxSpec {
-			PxReal x;
-			PxReal y;
-			PxReal z;
-		} box;
-
-		struct CapsuleSpec {
-			PxReal radius;
-			PxReal halfHeight;
-		} capsule;
-	};
-
-
-};
-
-class Proyectile;
-
-
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
+
+class Proyectile;
 
 class PhysicScene
 {
@@ -70,7 +45,6 @@ private:
 	double speedSimulatinFactor;
 
 	std::list<Particle*>particles;
-
 	std::list<ObjectListIt> toDelete;
 
 	//reference objects

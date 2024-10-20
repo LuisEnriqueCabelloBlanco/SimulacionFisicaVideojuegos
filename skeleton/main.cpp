@@ -9,13 +9,9 @@
 #include "callbacks.hpp"
 
 #include "PhysicScene.h"
+#include "GeneradorParticulas.h"
 
 #include <iostream>
-
-//#include "Vector3D.h"
-
-
-#include "Particle.h"
 
 std::string display_text = "This";
 
@@ -37,6 +33,11 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 PhysicScene* mPS;
+GeneradorParticulas<std::uniform_real_distribution<double>,
+	std::uniform_real_distribution<double>, 
+	std::uniform_real_distribution<double>, 
+	std::normal_distribution<double>>* parGen;
+
 
 
 // Initialize physics engine
@@ -64,11 +65,20 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	mPS = new PhysicScene(/*80,500*/);
+	mPS = new PhysicScene(80,500);
 
 	mPS->initScene();
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
-
+	parGen = new GeneradorParticulas<std::uniform_real_distribution<double>,
+		std::uniform_real_distribution<double>,
+		std::uniform_real_distribution<double>,
+		std::normal_distribution<double>>(0, 0.3);
+	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
+	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
+	parGen->setInitalPosVar(Vector3(-20,30,-20), Vector3(10));
+	parGen->setParticlesPerSpawn(20);
+	parGen->setInitialPos(Vector3(0, 100, 0));
+	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > 0; });
 	}
 
 
@@ -79,10 +89,12 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	mPS->updateScene(t);
+	parGen->update(t);
 	//a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
+	parGen->clearParticles();
 	mPS->clearParticles();
 }
 
@@ -103,6 +115,7 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 	delete mPS;
+	delete parGen;
 	}
 
 // Function called when a key is pressed

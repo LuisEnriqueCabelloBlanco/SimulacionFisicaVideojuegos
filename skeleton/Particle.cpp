@@ -1,5 +1,5 @@
 #include "Particle.h"
-
+#include <iostream>
 
 
 using namespace physx;
@@ -9,9 +9,10 @@ Particle::Particle(const Vector3& pos,const Vector3& Acc,double damp):pose(pos),
 	renderItem = new RenderItem(CreateShape(PxSphereGeometry(PATICLE_SIZE)),&pose,Vector4(1, 0, 0, 1));
 }
 
-Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Color color)
-	:pose(pos), _acc(0), _damping(damp),_vel(0)
+Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Color color, double liveTime)
+	:pose(pos), _acc(0), _damping(damp),_vel(0),livetime(liveTime)
 {
+	currentLivetime = liveTime;
 	PxShape* pShape;
 
 	switch (geom.shape)
@@ -33,6 +34,7 @@ Particle::Particle(const Vector3& pos,const GeometrySpec& geom, double damp, Col
 	}
 
 	renderItem = new RenderItem(pShape,&pose, color);
+	aliveCond = [](Particle* p) {return true; };
 }
 
 Particle::~Particle()
@@ -72,4 +74,13 @@ void Particle::integrate(double dt)
 
 
 
+}
+
+void Particle::update(double dt)
+{
+	integrate(dt);
+	if (livetime != 0) {
+		currentLivetime -= dt;
+	}
+	alive = aliveCond(this) && currentLivetime >=0;
 }

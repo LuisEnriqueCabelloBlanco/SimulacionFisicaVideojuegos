@@ -15,5 +15,28 @@ using namespace Snippets;
 typedef physx::PxVec3 Vector3;
 typedef physx::PxVec4 Vector4;
 
+enum ParticleShape { SPHERE, CUBE, PLANE, CAPSULE };
+
+struct GeometrySpec {
+	ParticleShape shape;
+	union {
+		struct SphereSpec {
+			physx::PxReal radious;
+		} sphere;
+
+		struct BoxSpec {
+			physx::PxReal x;
+			physx::PxReal y;
+			physx::PxReal z;
+		} box;
+
+		struct CapsuleSpec {
+			physx::PxReal radius;
+			physx::PxReal halfHeight;
+		} capsule;
+	};
+
+
+};
 
 #endif
