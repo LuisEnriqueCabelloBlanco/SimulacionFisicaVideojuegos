@@ -99,9 +99,11 @@ void PhysicScene::initScene()
 	//pr->addForce(Vector3(0, -9.8, 0));
 }
 
-void PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double damping,const Color& color)
+Particle* PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double massInv,double damping,const Color& color)
 {
-	particles.push_back(new Particle(pos,geom,damping,color));
+	Particle* aux = new Particle(pos, geom,massInv, damping, color);
+	particles.push_back(aux);
+	return aux;
 }
 
 Proyectile* PhysicScene::createProyectile(double mass,const Vector3& initPos,const Vector3& initSpeed)

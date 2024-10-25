@@ -58,7 +58,7 @@ public:
 	}
 
 	inline void setInitalPosVar(Vector3 a, Vector3 b) { position.setRandom(a, b);};
-	void setInitialVel(Vector3 a, Vector3 b) {initVel.setRandom(a, b)};
+	void setInitialVel(Vector3 a, Vector3 b) { initVel.setRandom(a, b); };
 	void setParticlesPerSpawn(int pCount) { particlesPerSpawn = pCount; }
 	void setParticlesAliveCond(const std::function<bool(Particle* par)>& func) { particlesAliveCond = func; }
 	void setShape(const GeometrySpec& geom) { particleShape = geom; }
@@ -84,7 +84,7 @@ protected:
 	{
 		Proyectile* pr = new Proyectile(0.5,
 			basePosition + position(), particleShape,
-			initVel(), uRandLiveTime(gen));
+			initVel(), uRandLiveTime(gen),pColor);
 		pr->accelerate(Vector3(0, -9.8, 0));
 		pr->setDeathFunc(particlesAliveCond);
 
@@ -93,9 +93,13 @@ protected:
 
 	GeometrySpec particleShape;
 
+	Color pColor = Color(1,2,1,0.3);
+
 	int particlesPerSpawn = 1;
 	Vector3 basePosition = Vector3(0);
 	double particleRate = 0;
+	Vector3 gravityAcc = Vector3(0, -9.8, 0);
+
 
 	double nextSpawnTime;
 	double currentTime;
@@ -105,7 +109,7 @@ protected:
 	std::default_random_engine gen;
 	std::uniform_real_distribution<double> uRandGenTime;
 	std::uniform_real_distribution<double> uRandLiveTime;
-	Vector3Rand<std::normal_distribution<float>> position;
+	Vector3Rand<RanPos> position;
 	Vector3Rand<RanVel> initVel;
 
 	ObjectsList mParticles;

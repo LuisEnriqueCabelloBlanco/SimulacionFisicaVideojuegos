@@ -22,13 +22,15 @@ public:
 	Particle(){}
 
 	Particle(const Vector3& pos,const Vector3& acc, double damp);
-	Particle(const Vector3& pos,const GeometrySpec& geom, double damp = 0.98, Color color = Color(1, 1, 1, 1),double liveTime=0);
+	Particle(const Vector3& pos,const GeometrySpec& geom,double massInverse =0, double damp = 0.98, Color color = Color(1, 1, 1, 1),double liveTime=0);
 	virtual ~Particle();
 
 	void integrate(double t);
 	virtual void update(double dt);
 
 	inline void accelerate(const Vector3& Acc) { _acc += Acc; }
+	inline void addForce(Vector3 F) { _sumOfForces = F; }
+
 
 	void setColor(const Vector4& color) { renderItem->color = color; }
 	void setDeathFunc(const std::function<bool(Particle* par)>& f) { aliveCond = f; }
@@ -37,7 +39,7 @@ public:
 	inline const Vector3 getPos() const { return pose.p; }
 	//returns if the particle must be alive
 	inline const bool getAlive() const { return alive; }
-
+	inline const double getMass() const { return 1/massInverse; }
 protected:
 	const PxReal PATICLE_SIZE = 1;
 
@@ -49,9 +51,12 @@ protected:
 
 	bool alive = true;
 
+	double massInverse = 0;
 	double livetime;
 	double currentLivetime;
 
+
+	Vector3 _sumOfForces;
 	Vector3 _acc;
 	Vector3 _vel;
 #ifdef VERLET
