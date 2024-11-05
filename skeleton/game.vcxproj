@@ -265,6 +265,7 @@
     <ClCompile Include="Render\Render.cpp" />
     <ClCompile Include="SistemaDeParticulas.cpp" />
     <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="WhirlwindGenerator.cpp" />
     <ClCompile Include="WindGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +283,7 @@
     <ClInclude Include="SistemaDeParticulas.h" />
     <ClInclude Include="Vec3Rand.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="WhirlwindGenerator.h" />
     <ClInclude Include="WindGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

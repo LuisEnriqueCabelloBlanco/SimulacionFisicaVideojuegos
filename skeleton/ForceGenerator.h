@@ -1,22 +1,21 @@
 #pragma once
 #include <list>
-#include "Particle.h";
+#include<functional>
+#include "Particle.h"
+#include "PhysicScene.h"
 
 class ForceGenerator
 {
 public:
-	ForceGenerator() {}
-
-	void suscribeParticle(Particle* par);
+	ForceGenerator(PhysicScene* pS):mPs(pS) {}
 
 	void update(double dt);
-
-	void clearParticles();
 
 	virtual Vector3 calculateForce(Particle* par)=0;
 
 protected:
-	std::list<Particle*> suscribedParticles;
-
+	PhysicScene* mPs;
+	//function to determine if a particle needs to recive the force of the generator
+	std::function<bool(Particle*)> cond = [](Particle* p) {return true; };
 };
 

@@ -24,6 +24,9 @@ public:
 	Particle* addParticle(const Vector3& pos, const GeometrySpec& geom,double massInv=0, double damping = 0.98, const Color& color = Color(1,1,1,1));
 	void addParticle(Particle* par) { particles.push_back(par); }
 
+	const std::list<Particle*>& getParticleList() const { return particles; }
+	
+
 	Proyectile* createProyectile(double mass,const Vector3& initPos, const Vector3& initSpeed);
 	Proyectile* createProyectile(double mass,const Vector3& initPos, const Vector3& initSpeed, const GeometrySpec& geom);
 

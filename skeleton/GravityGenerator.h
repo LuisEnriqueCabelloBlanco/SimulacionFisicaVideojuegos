@@ -4,7 +4,7 @@ class GravityGenerator :
     public ForceGenerator
 {
 public:
-    GravityGenerator(Vector3 gravity = Vector3(0,-9.8,0)) :ForceGenerator() {
+    GravityGenerator(PhysicScene*pS,Vector3 gravity = Vector3(0,-9.8,0)) :ForceGenerator(pS) {
         gravityAcc = gravity;
     }
 

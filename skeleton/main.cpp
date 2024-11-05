@@ -12,6 +12,7 @@
 #include "GeneradorParticulas.h"
 #include "GravityGenerator.h"
 #include "WindGenerator.h"
+#include "WhirlwindGenerator.h"
 #include <iostream>
 
 std::string display_text = "This";
@@ -42,6 +43,7 @@ PhysicScene* mPS;
 Generator* parGen;
 GravityGenerator* grav;
 WindGenerator* wind;
+WhirlwindGenerator* tornado;
 
 
 // Initialize physics engine
@@ -84,21 +86,23 @@ void initPhysics(bool interactive)
 	parGen->setInitialPos(Vector3(0, 10, 0));
 	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > 0; });
 
-	grav = new GravityGenerator(Vector3(0,-9.8,0));
-	wind = new WindGenerator(Vector3(5, 3, 4), 1, 0);
+	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
+	wind = new WindGenerator(mPS,Vector3(5, 10, 4), 1, 0,Vector3(0,50,0),Vector3(10,10,10));
+
+	tornado = new WhirlwindGenerator(mPS, 5, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 1,5);
 
 	GeometrySpec geom;
 	geom.shape = SPHERE;
 	geom.sphere.radious = 1;
 
-	Particle* mPar = new Particle(Vector3(0, 50, 0), geom, 1,0.98, Color(1, 0, 0, 1));
+	Particle* mPar = new Particle(Vector3(20, 10, 0), geom, 1,0.98, Color(1, 0, 0, 1));
 	
 	mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
 
 	mPS->addParticle(mPar);
 
-	grav->suscribeParticle(mPar);
-	wind->suscribeParticle(mPar);
+	//grav->suscribeParticle(mPar);
+	//wind->suscribeParticle(mPar);
 	}
 
 
@@ -109,7 +113,8 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	grav->update(t);
-	wind->update(t);
+	//wind->update(t);
+	tornado->update(t);
 	mPS->updateScene(t);
 	//parGen->update(t);
 	//a->integrate(t);
@@ -117,8 +122,8 @@ void stepPhysics(bool interactive, double t)
 	gScene->fetchResults(true);
 
 
-	grav->clearParticles();
-	wind->clearParticles();
+	//grav->clearParticles();
+	//wind->clearParticles();
 	parGen->clearParticles();
 	mPS->clearParticles();
 }

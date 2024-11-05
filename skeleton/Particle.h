@@ -39,7 +39,8 @@ public:
 	inline const Vector3 getPos() const { return pose.p; }
 	//returns if the particle must be alive
 	inline const bool getAlive() const { return alive; }
-	inline const double getMass() const { return 1/massInverse; }
+	const double getMass() const;
+	inline const physx::PxShape* getShape() { return renderItem->shape; }
 protected:
 	const PxReal PATICLE_SIZE = 1;
 

@@ -86,3 +86,13 @@ void Particle::update(double dt)
 	}
 	alive = aliveCond(this) && currentLivetime >=0;
 }
+
+const double Particle::getMass() const
+{
+	if (massInverse == 0) {
+		return 0;
+	}
+	else {
+		return 1 / massInverse;
+	}
+}
