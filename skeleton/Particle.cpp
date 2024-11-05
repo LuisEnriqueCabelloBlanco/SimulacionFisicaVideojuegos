@@ -10,7 +10,7 @@ Particle::Particle(const Vector3& pos,const Vector3& Acc,double damp):pose(pos),
 }
 
 Particle::Particle(const Vector3& pos,const GeometrySpec& geom,double massInv, double damp, Color color, double liveTime)
-	:pose(pos), _acc(0), _damping(damp),_vel(0),livetime(liveTime),massInverse(massInv)
+	:pose(pos), _acc(0), _damping(damp),_vel(0),livetime(liveTime),massInverse(massInv),_sumOfForces(0)
 {
 	currentLivetime = liveTime;
 	PxShape* pShape;
@@ -47,7 +47,7 @@ Particle::~Particle()
 void Particle::integrate(double dt)
 {
 
-	_acc += _sumOfForces * massInverse;
+	_acc = _sumOfForces * massInverse;
 
 #ifdef VERLET
 	if (firstEuler&&_acc.magnitudeSquared() > 0) {

@@ -11,6 +11,7 @@
 #include "PhysicScene.h"
 #include "GeneradorParticulas.h"
 #include "GravityGenerator.h"
+#include "WindGenerator.h"
 #include <iostream>
 
 std::string display_text = "This";
@@ -40,6 +41,7 @@ using Generator = GeneradorParticulas<std::uniform_real_distribution<double>,
 PhysicScene* mPS;
 Generator* parGen;
 GravityGenerator* grav;
+WindGenerator* wind;
 
 
 // Initialize physics engine
@@ -82,19 +84,21 @@ void initPhysics(bool interactive)
 	parGen->setInitialPos(Vector3(0, 10, 0));
 	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > 0; });
 
-	grav = new GravityGenerator(Vector3(0,-5,0));
+	grav = new GravityGenerator(Vector3(0,-9.8,0));
+	wind = new WindGenerator(Vector3(5, 3, 4), 1, 0);
 
 	GeometrySpec geom;
 	geom.shape = SPHERE;
 	geom.sphere.radious = 1;
 
-	Particle* mPar = new Particle(Vector3(0, 30, 0), geom, 30);
+	Particle* mPar = new Particle(Vector3(0, 50, 0), geom, 1,0.98, Color(1, 0, 0, 1));
 	
 	mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
 
 	mPS->addParticle(mPar);
 
 	grav->suscribeParticle(mPar);
+	wind->suscribeParticle(mPar);
 	}
 
 
@@ -105,6 +109,7 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	grav->update(t);
+	wind->update(t);
 	mPS->updateScene(t);
 	//parGen->update(t);
 	//a->integrate(t);
@@ -113,6 +118,7 @@ void stepPhysics(bool interactive, double t)
 
 
 	grav->clearParticles();
+	wind->clearParticles();
 	parGen->clearParticles();
 	mPS->clearParticles();
 }

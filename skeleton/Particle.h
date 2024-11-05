@@ -29,7 +29,7 @@ public:
 	virtual void update(double dt);
 
 	inline void accelerate(const Vector3& Acc) { _acc += Acc; }
-	inline void addForce(Vector3 F) { _sumOfForces = F; }
+	inline void addForce(Vector3 F) { _sumOfForces += F; }
 
 
 	void setColor(const Vector4& color) { renderItem->color = color; }
