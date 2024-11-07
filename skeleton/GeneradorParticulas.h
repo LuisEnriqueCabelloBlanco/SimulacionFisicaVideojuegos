@@ -57,12 +57,13 @@ public:
 
 	}
 
-	inline void setInitalPosVar(Vector3 a, Vector3 b) { position.setRandom(a, b);};
-	void setInitialVel(Vector3 a, Vector3 b) { initVel.setRandom(a, b); };
+	inline void setInitalPosVar(const Vector3& a,const Vector3& b) { position.setRandom(a, b);};
+	void setInitialVel(const Vector3& a,const Vector3& b) { initVel.setRandom(a, b); };
 	void setParticlesPerSpawn(int pCount) { particlesPerSpawn = pCount; }
 	void setParticlesAliveCond(const std::function<bool(Particle* par)>& func) { particlesAliveCond = func; }
 	void setShape(const GeometrySpec& geom) { particleShape = geom; }
-	void setInitialPos(Vector3 iniPos) { basePosition = iniPos; }
+	void setInitialPos(const Vector3& iniPos) { basePosition = iniPos; }
+	void setParticleColor(const Color& col) { pColor = col; }
 
 	void clearParticles()
 	{
@@ -93,7 +94,7 @@ protected:
 
 	GeometrySpec particleShape;
 
-	Color pColor = Color(1,2,1,0.3);
+	Color pColor = Color(1,2,1,1);
 
 	int particlesPerSpawn = 1;
 	Vector3 basePosition = Vector3(0);

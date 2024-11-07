@@ -77,7 +77,7 @@ void initPhysics(bool interactive)
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
 
 
-	parGen = new Generator(0, 0.3);
+	parGen = new Generator(4, 0.3);
 	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
 	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
 	parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,5,0));
@@ -85,6 +85,7 @@ void initPhysics(bool interactive)
 	parGen->setParticlesPerSpawn(10);
 	parGen->setInitialPos(Vector3(0, 10, 0));
 	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > 0; });
+	parGen->setParticleColor(Color(0, 1, 1, 1));
 
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
 	wind = new WindGenerator(mPS,Vector3(5, 10, 4), 1, 0,Vector3(0,50,0),Vector3(10,10,10));
@@ -101,7 +102,7 @@ void initPhysics(bool interactive)
 
 	mPS->addParticle(mPar);
 
-	//grav->suscribeParticle(mPar);
+	//grav->suscribeParticle(mPar); 
 	//wind->suscribeParticle(mPar);
 	}
 
@@ -114,9 +115,9 @@ void stepPhysics(bool interactive, double t)
 	PX_UNUSED(interactive);
 	grav->update(t);
 	//wind->update(t);
-	tornado->update(t);
+	tornado->update(t,mPS->getParticleList());
 	mPS->updateScene(t);
-	//parGen->update(t);
+	parGen->update(t);
 	//a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
