@@ -5,6 +5,7 @@
 #include <random>
 #include <functional>
 #include <list>
+#include "ForceGenerator.h"
 
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
@@ -47,6 +48,9 @@ public:
 			currentTime = 0;
 		}
 
+		for (auto forceGen : forces) {
+			forceGen->update(dt, mParticles);
+		}
 
 		for (ObjectListIt it = mParticles.begin(); it != mParticles.end(); ++it) {
 			(*it)->update(dt);
@@ -64,6 +68,14 @@ public:
 	void setShape(const GeometrySpec& geom) { particleShape = geom; }
 	void setInitialPos(const Vector3& iniPos) { basePosition = iniPos; }
 	void setParticleColor(const Color& col) { pColor = col; }
+
+	void addForceGen(ForceGenerator* fg) {
+		forces.push_back(fg);
+	}
+
+	void removeForce(ForceGenerator* fg) {
+		forces.remove(fg);
+	}
 
 	void clearParticles()
 	{
@@ -115,5 +127,6 @@ protected:
 
 	ObjectsList mParticles;
 	std::list<ObjectListIt> toDelete;
+	std::list<ForceGenerator*> forces;
 };
 

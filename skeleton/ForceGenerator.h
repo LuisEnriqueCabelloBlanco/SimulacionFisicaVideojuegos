@@ -19,6 +19,6 @@ protected:
 	//function to determine if a particle needs to recive the force of the generator
 	std::function<bool(Particle*)> cond = [](Particle* p) {return true; };
 
-	float time;
+	double time =0;
 };
 

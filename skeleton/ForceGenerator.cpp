@@ -3,15 +3,7 @@
 
 void ForceGenerator::update(double dt)
 {
-	//for (auto p : suscribedParticles) {
-	//	p->addForce(calculateForce(p));
-	//}
-	time += dt;
-	for (auto p : mPs->getParticleList()) {
-		if (cond(p)) {
-			p->addForce(calculateForce(p));
-		}
-	}
+	update(dt,mPs->getParticleList());
 }
 
 void ForceGenerator::update(double dt, const std::list<Particle*>& list)

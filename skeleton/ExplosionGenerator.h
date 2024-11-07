@@ -4,7 +4,7 @@ class ExplosionGenerator :
     public ForceGenerator
 {
 public:
-    ExplosionGenerator();
+    ExplosionGenerator(const Vector3& center,float range,float timeConst,float intensity);
 
     // Heredado vía ForceGenerator
     Vector3 calculateForce(Particle* par) override;
