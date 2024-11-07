@@ -6,7 +6,8 @@ ExplosionGenerator::ExplosionGenerator(const Vector3& center, float range, float
 }
 
 Vector3 ExplosionGenerator::calculateForce(Particle* par)
-{
+{	
+	explosionMaxRange = rangeSpeed * time;
 	Vector3 force = Vector3(0);
 	Vector3 deltaPos = par->getPos() - center;
 	float r = deltaPos.magnitude();

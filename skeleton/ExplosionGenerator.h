@@ -13,5 +13,6 @@ private:
     float explosionMaxRange;
     float timeConstant;
     float intensity;
+    float rangeSpeed = 300;
 };
 

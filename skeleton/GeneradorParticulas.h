@@ -68,6 +68,7 @@ public:
 	void setShape(const GeometrySpec& geom) { particleShape = geom; }
 	void setInitialPos(const Vector3& iniPos) { basePosition = iniPos; }
 	void setParticleColor(const Color& col) { pColor = col; }
+	void setMassInverse(double invMass) { massInverse = invMass; }
 
 	void addForceGen(ForceGenerator* fg) {
 		forces.push_back(fg);
@@ -95,7 +96,7 @@ public:
 protected:
 	void addParticle()
 	{
-		Proyectile* pr = new Proyectile(0.5,
+		Proyectile* pr = new Proyectile(massInverse,
 			basePosition + position(), particleShape,
 			initVel(), uRandLiveTime(gen),pColor);
 		pr->accelerate(Vector3(0, -9.8, 0));
@@ -116,6 +117,8 @@ protected:
 
 	double nextSpawnTime;
 	double currentTime;
+
+	double massInverse=0;
 
 	std::function<bool(Particle*)> particlesAliveCond;
 

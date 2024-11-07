@@ -82,19 +82,20 @@ void initPhysics(bool interactive)
 	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
 	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
 	parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,5,0));
-	parGen->setInitialVel(Vector3(-10,5,-10), Vector3(10,15, 10));
+	parGen->setInitialVel(Vector3(-30,5,-30), Vector3(30,15, 30));
 	parGen->setParticlesPerSpawn(10);
 	parGen->setInitialPos(Vector3(0, 10, 0));
 	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > 0; });
 	parGen->setParticleColor(Color(0, 1, 1, 1));
+	parGen->setMassInverse(1);
 
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
 	wind = new WindGenerator(mPS,Vector3(5, 10, 4), 1, 0,Vector3(0,50,0),Vector3(10,10,10));
 
-	tornado = new WhirlwindGenerator(mPS, 5, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 4,5);
+	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 10,2);
 
 	parGen->addForceGen(grav);
-	//parGen->addForceGen(tornado);
+	parGen->addForceGen(tornado);
 
 	GeometrySpec geom;
 	geom.shape = SPHERE;
