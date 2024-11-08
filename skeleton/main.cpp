@@ -125,7 +125,7 @@ void stepPhysics(bool interactive, double t)
 	spring->update(t);
 	grav->update(t);
 	//wind->update(t);
-	tornado->update(t,mPS->getParticleList());
+	//tornado->update(t,mPS->getParticleList());
 	mPS->updateScene(t);
 	//parGen->update(t);
 	//a->integrate(t);

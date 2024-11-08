@@ -11,9 +11,13 @@ public:
     ~HookeForce();
 
 private:
+    //particula a la que aplicar el muelle
     Particle* particleToAplie;
+    //referencia visual
     Particle* reference;
+    //coeficiente de elasticidad
     double k;
+    //longitud en reposo
     double l_0;
     Vector3 hookPoint;
 
