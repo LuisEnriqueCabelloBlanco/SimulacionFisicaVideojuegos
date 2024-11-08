@@ -14,6 +14,7 @@
 #include "WindGenerator.h"
 #include "WhirlwindGenerator.h"
 #include "ExplosionGenerator.h"
+#include "HookeForce.h"
 #include <iostream>
 
 std::string display_text = "This";
@@ -46,6 +47,7 @@ GravityGenerator* grav;
 WindGenerator* wind;
 WhirlwindGenerator* tornado;
 ExplosionGenerator* explode = nullptr;
+HookeForce* spring = nullptr;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -92,7 +94,7 @@ void initPhysics(bool interactive)
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
 	wind = new WindGenerator(mPS,Vector3(5, 10, 4), 1, 0,Vector3(0,50,0),Vector3(10,10,10));
 
-	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 10,2);
+	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 5,2);
 
 	parGen->addForceGen(grav);
 	parGen->addForceGen(tornado);
@@ -107,6 +109,8 @@ void initPhysics(bool interactive)
 
 	mPS->addParticle(mPar);
 
+	spring = new HookeForce(Vector3(0, 30, 0), mPar, 4, 5);
+
 	//grav->suscribeParticle(mPar); 
 	//wind->suscribeParticle(mPar);
 	}
@@ -118,11 +122,12 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
+	spring->update(t);
 	grav->update(t);
 	//wind->update(t);
 	tornado->update(t,mPS->getParticleList());
 	mPS->updateScene(t);
-	parGen->update(t);
+	//parGen->update(t);
 	//a->integrate(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
