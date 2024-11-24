@@ -8,7 +8,7 @@ void ForceGenerator::update(double dt)
 
 void ForceGenerator::update(double dt, const std::list<Particle*>& list)
 {
-	time += dt;
+	time += dt; 
 	for (auto p : list) {
 		if (cond(p)) {
 			p->addForce(calculateForce(p));

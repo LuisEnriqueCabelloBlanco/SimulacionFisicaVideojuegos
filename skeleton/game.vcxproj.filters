@@ -19,12 +19,31 @@
     <ClCompile Include="Proyectile.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
-    <ClCompile Include="ForceGenerator.cpp" />
-    <ClCompile Include="GravityGenerator.cpp" />
-    <ClCompile Include="WindGenerator.cpp" />
-    <ClCompile Include="WhirlwindGenerator.cpp" />
-    <ClCompile Include="ExplosionGenerator.cpp" />
-    <ClCompile Include="HookeForce.cpp" />
+    <ClCompile Include="ExplosionGenerator.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceGenerator.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="GravityGenerator.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="HookeForce.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="WindGenerator.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="WhirlwindGenerator.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="DualHookForce.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="RubberBand.cpp">
+      <Filter>Forces</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatForce.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -47,12 +66,31 @@
     <ClInclude Include="Proyectile.h">
       <Filter>Particles</Filter>
     </ClInclude>
-    <ClInclude Include="ForceGenerator.h" />
-    <ClInclude Include="GravityGenerator.h" />
-    <ClInclude Include="WindGenerator.h" />
-    <ClInclude Include="WhirlwindGenerator.h" />
-    <ClInclude Include="ExplosionGenerator.h" />
-    <ClInclude Include="HookeForce.h" />
+    <ClInclude Include="ExplosionGenerator.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceGenerator.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="GravityGenerator.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="HookeForce.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="WindGenerator.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="WhirlwindGenerator.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="DualHookForce.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="RubberBand.h">
+      <Filter>Forces</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatForce.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
@@ -60,6 +98,9 @@
     </Filter>
     <Filter Include="Particles">
       <UniqueIdentifier>{33e1ec2c-08fd-4047-b4a3-cc1e601b31d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Forces">
+      <UniqueIdentifier>{e274b926-2fa0-4e54-9b0a-afc2b21bc945}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

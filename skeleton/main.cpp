@@ -15,6 +15,9 @@
 #include "WhirlwindGenerator.h"
 #include "ExplosionGenerator.h"
 #include "HookeForce.h"
+#include "DualHookForce.h"
+#include "RubberBand.h"
+#include "FloatForce.h"
 #include <iostream>
 
 std::string display_text = "This";
@@ -36,6 +39,8 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
+
+
 using Generator = GeneradorParticulas<std::uniform_real_distribution<double>,
 	std::uniform_real_distribution<double>,
 	std::uniform_real_distribution<double>,
@@ -43,11 +48,17 @@ using Generator = GeneradorParticulas<std::uniform_real_distribution<double>,
 
 PhysicScene* mPS;
 Generator* parGen;
+
 GravityGenerator* grav;
 WindGenerator* wind;
 WhirlwindGenerator* tornado;
 ExplosionGenerator* explode = nullptr;
 HookeForce* spring = nullptr;
+DualHookForce* hook = nullptr;
+std::vector<DualHookForce*> slinky;
+FloatForce* water = nullptr;
+
+double springTimer  = 0;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -92,12 +103,12 @@ void initPhysics(bool interactive)
 	parGen->setMassInverse(1);
 
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
-	wind = new WindGenerator(mPS,Vector3(5, 10, 4), 1, 0,Vector3(0,50,0),Vector3(10,10,10));
+	wind = new WindGenerator(mPS,Vector3(70, 10, 4), 1, 0,Vector3(0,10,0),Vector3(10,10,10));
 
 	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(0, 50, 0), Vector3(60, 60, 60), 5,2);
 
-	parGen->addForceGen(grav);
-	parGen->addForceGen(tornado);
+	//parGen->addForceGen(grav);
+	//parGen->addForceGen(tornado);
 
 	GeometrySpec geom;
 	geom.shape = SPHERE;
@@ -105,15 +116,44 @@ void initPhysics(bool interactive)
 
 	Particle* mPar = new Particle(Vector3(20, 10, 0), geom, 1,0.98, Color(1, 0, 0, 1));
 	
-	mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
+	//mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
 
 	mPS->addParticle(mPar);
 
 	spring = new HookeForce(Vector3(0, 30, 0), mPar, 4, 5);
 
-	//grav->suscribeParticle(mPar); 
-	//wind->suscribeParticle(mPar);
+	mPar = new Particle(Vector3(20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
+
+	Particle* mPar1 = new Particle(Vector3(-20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
+
+
+	mPS->addParticle(mPar);
+	mPS->addParticle(mPar1);
+
+	hook = new RubberBand(mPar, mPar1,2,20);
+
+
+
+
+
+	//make slinky
+	Vector3 pos = Vector3(0, 40, 0);
+	Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
+	mPS->addParticle(p1);
+	for (int i = 0; i < 5; i++) {
+		pos += Vector3(0, 1, 0);
+		Particle* p2 = new Particle(pos, geom, 1, 0.98, Color(1, 0, 0, 1));
+		mPS->addParticle(p2);
+		slinky.push_back(new DualHookForce(p1, p2, 10, 5));
+		p1 = p2;
 	}
+
+	water = new FloatForce(mPS,0.5, 0);
+
+	//parGen->addForceGen(water);
+	//parGen->removeForce(tornado);
+	parGen->addForceGen(grav);
+}
 
 
 // Function to configure what happens in each step of physics
@@ -121,11 +161,21 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
+	springTimer += t;
 	PX_UNUSED(interactive);
-	spring->update(t);
+	if (springTimer < 2) {
+		spring->update(t);
+	}
 	grav->update(t);
 	//wind->update(t);
+	hook->update(t);
 	//tornado->update(t,mPS->getParticleList());
+	for (auto s : slinky) {
+		s->update(t);
+	}
+	water->update(t);
+
+
 	mPS->updateScene(t);
 	//parGen->update(t);
 	//a->integrate(t);
@@ -175,6 +225,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		}
 		explode = new ExplosionGenerator(Vector3(3,10,3),100,0.5,3000);
 		parGen->addForceGen(explode);
+		break;
+	case 'H':
+		springTimer = 0;
 		break;
 	default:
 		break;

@@ -14,7 +14,7 @@ Particle::Particle(const Vector3& pos,const GeometrySpec& geom,double massInv, d
 {
 	currentLivetime = liveTime;
 	PxShape* pShape;
-
+	
 	switch (geom.shape)
 	{
 	case SPHERE:
@@ -95,4 +95,42 @@ const double Particle::getMass() const
 	else {
 		return 1 / massInverse;
 	}
+}
+
+const double Particle::getHeight()
+{
+	double val = 1.0;
+	PxGeometryHolder geomH = renderItem->shape->getGeometry();
+	switch (geomH.getType())
+	{
+	case PxGeometryType::eBOX:
+		val = geomH.box().halfExtents.y * 2;
+		break;
+	case PxGeometryType::eSPHERE:
+		val = geomH.sphere().radius * 2;
+		break;
+	default:
+		break;
+	}
+
+	return val;
+}
+
+const double Particle::getBase()
+{
+	double val = 1.0;
+	PxGeometryHolder geomH = renderItem->shape->getGeometry();
+	switch (geomH.getType())
+	{
+	case PxGeometryType::eBOX:
+		val = geomH.box().halfExtents.x * 2*geomH.box().halfExtents.z *2;
+		break;
+	case PxGeometryType::eSPHERE:
+		val = geomH.sphere().radius * geomH.sphere().radius * 4;
+		break;
+	default:
+		break;
+	}
+
+	return val;
 }

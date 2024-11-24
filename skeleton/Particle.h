@@ -41,6 +41,11 @@ public:
 	inline const bool getAlive() const { return alive; }
 	const double getMass() const;
 	inline const physx::PxShape* getShape() { return renderItem->shape; }
+
+	//returs the height of the object as if it was a cube
+	const double getHeight();
+	//returs the base of the object as if it was a cube
+	const double getBase();
 protected:
 	const PxReal PATICLE_SIZE = 1;
 

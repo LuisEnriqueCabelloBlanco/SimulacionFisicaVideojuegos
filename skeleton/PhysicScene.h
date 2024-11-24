@@ -47,6 +47,8 @@ private:
 	double massSimulationFactor;
 	double speedSimulatinFactor;
 
+	//std::list<ForceGenerator*> forces;
+
 	std::list<Particle*>particles;
 	std::list<ObjectListIt> toDelete;
 

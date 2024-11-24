@@ -254,7 +254,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="DualHookForce.cpp" />
     <ClCompile Include="ExplosionGenerator.cpp" />
+    <ClCompile Include="FloatForce.cpp" />
     <ClCompile Include="ForceGenerator.cpp" />
     <ClCompile Include="GravityGenerator.cpp" />
     <ClCompile Include="HookeForce.cpp" />
@@ -265,6 +267,7 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="RubberBand.cpp" />
     <ClCompile Include="SistemaDeParticulas.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WhirlwindGenerator.cpp" />
@@ -273,7 +276,9 @@
   <ItemGroup>
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
+    <ClInclude Include="DualHookForce.h" />
     <ClInclude Include="ExplosionGenerator.h" />
+    <ClInclude Include="FloatForce.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="GeneradorParticulas.h" />
     <ClInclude Include="GravityGenerator.h" />
@@ -284,6 +289,7 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="RubberBand.h" />
     <ClInclude Include="SistemaDeParticulas.h" />
     <ClInclude Include="Vec3Rand.h" />
     <ClInclude Include="Vector3D.h" />
