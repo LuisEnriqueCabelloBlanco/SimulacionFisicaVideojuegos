@@ -20,7 +20,7 @@ class GeneradorParticulas
 public:
 
 	GeneradorParticulas(std::pair<double, double> liveTime,std::pair<double,double> randGentime = {1.0,1.0}) :
-		uRandGenTime(randGentime.first,randGentime.second),uRandLiveTime(liveTime.first,liveTime.second) {
+		uRandGenTime(randGentime.first,randGentime.second),uRandLiveTime(liveTime.first,liveTime.second),uRandMassInverse(-0.2,0.2) {
 		currentTime = 0;
 		nextSpawnTime = particleRate;
 		particlesAliveCond = [](Particle* p) {return true; };
@@ -96,7 +96,7 @@ public:
 protected:
 	void addParticle()
 	{
-		Proyectile* pr = new Proyectile(massInverse,
+		Proyectile* pr = new Proyectile(massInverse+uRandMassInverse(gen),
 			basePosition + position(), particleShape,
 			initVel(), uRandLiveTime(gen),pColor);
 		pr->accelerate(Vector3(0, -9.8, 0));
@@ -125,6 +125,7 @@ protected:
 	std::default_random_engine gen;
 	std::uniform_real_distribution<double> uRandGenTime;
 	std::uniform_real_distribution<double> uRandLiveTime;
+	std::uniform_real_distribution<double> uRandMassInverse;
 	Vector3Rand<RanPos> position;
 	Vector3Rand<RanVel> initVel;
 
