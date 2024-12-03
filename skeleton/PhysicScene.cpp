@@ -3,6 +3,7 @@
 #include "Proyectile.h"
 #include "core.hpp"
 #include <iostream>
+#include "SolidoRigido.h"
 PhysicScene::PhysicScene()
 {
 
@@ -99,19 +100,29 @@ void PhysicScene::initScene()
 
 	GeometrySpec geom;
 	geom.shape = CUBE;
-	geom.box.x=200;
-	geom.box.y=0.5;
-	geom.box.z=200;
+	geom.box.x=2;
+	geom.box.y=2;
+	geom.box.z=2;
 
-	PxTransform pose(Vector3(0, 5, 0));
+
+
+	PxTransform pose(Vector3(0, 0, 0));
 	PxRigidStatic* statico = gPhysics->createRigidStatic(pose);
-
-	PxShape* s = CreateShape(PxSphereGeometry(1));
+	PxShape* s = CreateShape(PxBoxGeometry(100,0.01,100));
 	statico->attachShape(*s);
-
 	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 1));
-
 	gScene->addActor(*statico);
+
+	/*PxTransform pose1(Vector3(0, 5, 0));
+	PxRigidDynamic* din = gPhysics->createRigidDynamic(pose1);
+	PxShape* s1 = CreateShape(PxBoxGeometry(1,1,1));
+	din->attachShape(*s1);
+	new RenderItem(s1, din, Color(0.5, 0.5, 1, 1));
+	gScene->addActor(*din);
+
+	din->addForce(Vector3(10, 10, 0));*/
+
+	new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene);
 
 	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
 	//par->setColor(Vector4(1, 1,1, 0));

@@ -162,7 +162,7 @@ void initPhysics(bool interactive)
 	parGen->addForceGen(resistance);
 
 	mPS->addForce(grav);
-
+	mPS->addForce(resistance);
 	
 }
 
@@ -177,7 +177,7 @@ void stepPhysics(bool interactive, double t)
 	if (springTimer < 2) {
 		spring->update(t);
 	}
-	grav->update(t);
+	//grav->update(t);
 	//wind->update(t);
 	hook->update(t);
 	//tornado->update(t,mPS->getParticleList());
@@ -185,7 +185,7 @@ void stepPhysics(bool interactive, double t)
 		s->update(t);
 	}
 	//water->update(t);
-	resistance->update(t);
+	//resistance->update(t);
 
 	mPS->updateScene(t);
 	parGen->update(t);

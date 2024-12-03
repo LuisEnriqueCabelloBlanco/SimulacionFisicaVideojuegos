@@ -46,6 +46,7 @@
       <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="MainScene.cpp" />
+    <ClCompile Include="SolidoRigido.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -95,6 +96,7 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="MainScene.h" />
+    <ClInclude Include="SolidoRigido.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
