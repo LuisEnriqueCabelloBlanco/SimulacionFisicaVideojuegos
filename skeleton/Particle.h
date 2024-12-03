@@ -34,7 +34,8 @@ public:
 
 	void setColor(const Vector4& color) { renderItem->color = color; }
 	void setDeathFunc(const std::function<bool(Particle* par)>& f) { aliveCond = f; }
-
+	
+	inline void setVel(Vector3 v) { _vel = v; }
 	inline const Vector3 getVel() const { return _vel; }
 	inline const Vector3 getPos() const { return pose.p; }
 	//returns if the particle must be alive

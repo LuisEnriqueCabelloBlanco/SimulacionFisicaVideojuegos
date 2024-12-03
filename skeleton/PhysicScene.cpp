@@ -25,6 +25,10 @@ PhysicScene::~PhysicScene()
 	for (auto p : particles) {
 		delete p;
 	}
+
+	for (auto f : forces) {
+		delete f;
+	}
 }
 void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 {
@@ -144,6 +148,10 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 
 void PhysicScene::updateScene(double dt)
 {
+	for (auto f : forces) {
+		f->update(dt, particles);
+	}
+
 	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end();++it) {
 		(*it)->update(dt);
 		if (!(*it)->getAlive()) {

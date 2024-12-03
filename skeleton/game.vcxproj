@@ -261,6 +261,7 @@
     <ClCompile Include="GravityGenerator.cpp" />
     <ClCompile Include="HookeForce.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="PhysicScene.cpp" />
     <ClCompile Include="Proyectile.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="GeneradorParticulas.h" />
     <ClInclude Include="GravityGenerator.h" />
     <ClInclude Include="HookeForce.h" />
+    <ClInclude Include="MainScene.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="PhysicScene.h" />
     <ClInclude Include="Proyectile.h" />

@@ -2,12 +2,14 @@
 #include <list>
 #include<functional>
 #include "Particle.h"
-#include "PhysicScene.h"
+
+class PhysicScene;
 
 class ForceGenerator
 {
 public:
 	ForceGenerator(PhysicScene* pS):mPs(pS) {}
+	ForceGenerator():mPs(nullptr){}
 
 	virtual void update(double dt);
 	virtual void update(double dt, const std::list<Particle*>& list);

@@ -90,23 +90,26 @@ void initPhysics(bool interactive)
 
 	mPS->initScene();
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
+	GeometrySpec geom1;
+	geom1.shape = SPHERE;
+	geom1.sphere.radious = 0.5;
 
-
-	parGen = new Generator(20, 0.02);
+	parGen = new Generator(20, 4);
 	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
 	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
 	parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,0,0));
-	parGen->setInitialVel(Vector3(-10,0,-10), Vector3(10,0, 10));
-	parGen->setParticlesPerSpawn(50);
-	parGen->setInitialPos(Vector3(0, 50, 0));
-	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > -4 && p->getVel().magnitude() < 200; });
+	//parGen->setInitialVel(Vector3(-10,0,-10), Vector3(10,0, 10));
+	parGen->setParticlesPerSpawn(1);
+	parGen->setInitialPos(Vector3(0, 20, 0));
+	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > -100;});
 	parGen->setParticleColor(Color(0, 1, 1, 1));
-	parGen->setMassInverse(0.9);
+	parGen->setMassInverse(0.0002);
+	parGen->setShape(geom1);
 
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
 	wind = new WindGenerator(mPS,Vector3(70, 10, 4), 1, 0,Vector3(0,10,0),Vector3(10,10,10));
 
-	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(10, 5, 0), Vector3(20, 60, 20), 5,10);
+	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(2, 5, 0), Vector3(20, 60, 20), 5,10);
 
 	//parGen->addForceGen(grav);
 	//parGen->addForceGen(tornado);
@@ -150,13 +153,15 @@ void initPhysics(bool interactive)
 	}
 
 	resistance = new WindGenerator(mPS, Vector3(0), 0.02, 0, Vector3(0), Vector3(1000));
-	water = new FloatForce(mPS,0.5, 0);
+	water = new FloatForce(mPS,1000, 0);
 
 
-	parGen->addForceGen(water);
 	//parGen->removeForce(tornado);
+	parGen->addForceGen(water);
 	parGen->addForceGen(grav);
 	parGen->addForceGen(resistance);
+
+	mPS->addForce(grav);
 }
 
 
@@ -177,7 +182,7 @@ void stepPhysics(bool interactive, double t)
 	for (auto s : slinky) {
 		s->update(t);
 	}
-	water->update(t);
+	//water->update(t);
 	resistance->update(t);
 
 	mPS->updateScene(t);

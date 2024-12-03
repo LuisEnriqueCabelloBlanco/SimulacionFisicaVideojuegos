@@ -45,6 +45,7 @@
     <ClCompile Include="PhysicScene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="MainScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="PhysicScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="MainScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

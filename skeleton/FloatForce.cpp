@@ -20,11 +20,11 @@ Vector3 FloatForce::calculateForce(Particle* par)
     {
         immersed = 0.0;
     }
-    else if (h0 - h > par->getHeight() * 0.5) {
+    else if ((h0 - h) > (par->getHeight() * 0.5)) {
         immersed = 1.0;
     }
     else {
-        immersed = (h0 - h) / par->getHeight() + 0.5;
+        immersed = (h0-h) / par->getHeight() + 0.5;
     }
 
     double fy = _liquid_density * volume * immersed * 9.8;

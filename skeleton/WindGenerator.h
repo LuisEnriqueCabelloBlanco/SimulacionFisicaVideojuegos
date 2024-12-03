@@ -10,6 +10,10 @@ public:
         cond = [this](Particle* p) {return boxBouds.contains(p->getPos()); };
     };
 
+    WindGenerator(PhysicScene* pS, Vector3 wSpd, double k1, double k2):ForceGenerator(pS) {
+
+    }
+
     Vector3 windSpeed;
     double k1;
     double k2;

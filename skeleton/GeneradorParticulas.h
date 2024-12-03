@@ -6,6 +6,7 @@
 #include <functional>
 #include <list>
 #include "ForceGenerator.h"
+#include "Particle.h"
 
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
@@ -96,11 +97,10 @@ public:
 protected:
 	void addParticle()
 	{
-		Proyectile* pr = new Proyectile(massInverse+uRandMassInverse(gen),
-			basePosition + position(), particleShape,
-			initVel(), uRandLiveTime(gen),pColor);
-		pr->accelerate(Vector3(0, -9.8, 0));
+		Particle* pr = new Particle(basePosition + position(), particleShape, massInverse + uRandMassInverse(gen), 0.98, pColor, uRandLiveTime(gen));
+		//pr->accelerate(Vector3(0, -9.8, 0));
 		pr->setDeathFunc(particlesAliveCond);
+		pr->setVel(initVel());
 
 		mParticles.push_back(pr);
 	}
