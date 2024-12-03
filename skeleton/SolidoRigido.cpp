@@ -27,3 +27,10 @@ SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px
 	mRenderItem = new RenderItem(pShape, rigid, Vector4(1,1,1,1));
 	mScene->addActor(*rigid);
 }
+
+SolidoRigido::~SolidoRigido()
+{
+	mScene->removeActor(*rigid);
+	rigid->release();
+	delete mRenderItem;
+}
