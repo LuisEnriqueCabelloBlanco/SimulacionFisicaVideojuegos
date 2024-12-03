@@ -84,26 +84,31 @@ void initPhysics(bool interactive)
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
-	gScene = gPhysics->createScene(sceneDesc);
 
-	mPS = new PhysicScene(80,500);
+	//gScene = gPhysics->createScene(sceneDesc);
+
+	mPS = new PhysicScene(gPhysics,sceneDesc);
 
 	mPS->initScene();
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
 	GeometrySpec geom1;
 	geom1.shape = SPHERE;
 	geom1.sphere.radious = 0.5;
+	//geom1.box.x = 0.5;
+	//geom1.box.y = 0.5;
+	//geom1.box.z = 0.5;
 
-	parGen = new Generator(20, 4);
+
+	parGen = new Generator(0, 4);
 	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
 	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
 	parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,0,0));
 	//parGen->setInitialVel(Vector3(-10,0,-10), Vector3(10,0, 10));
 	parGen->setParticlesPerSpawn(1);
-	parGen->setInitialPos(Vector3(0, 20, 0));
+	parGen->setInitialPos(Vector3(0, 5, 0));
 	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > -100;});
 	parGen->setParticleColor(Color(0, 1, 1, 1));
-	parGen->setMassInverse(0.0002);
+	parGen->setMassInverse(0.02);
 	parGen->setShape(geom1);
 
 	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
@@ -136,10 +141,6 @@ void initPhysics(bool interactive)
 
 	hook = new RubberBand(mPar, mPar1,2,20);
 
-
-
-
-
 	//make slinky
 	Vector3 pos = Vector3(0, 40, 0);
 	Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
@@ -152,16 +153,17 @@ void initPhysics(bool interactive)
 		p1 = p2;
 	}
 
-	resistance = new WindGenerator(mPS, Vector3(0), 0.02, 0, Vector3(0), Vector3(1000));
+	resistance = new WindGenerator(mPS, Vector3(0), 0.03, 0, Vector3(0,500,0), Vector3(1000));
 	water = new FloatForce(mPS,1000, 0);
 
-
 	//parGen->removeForce(tornado);
-	parGen->addForceGen(water);
 	parGen->addForceGen(grav);
+	parGen->addForceGen(water);
 	parGen->addForceGen(resistance);
 
 	mPS->addForce(grav);
+
+	
 }
 
 
@@ -188,8 +190,8 @@ void stepPhysics(bool interactive, double t)
 	mPS->updateScene(t);
 	parGen->update(t);
 	//a->integrate(t);
-	gScene->simulate(t);
-	gScene->fetchResults(true);
+	//gScene->simulate(t);
+	//gScene->fetchResults(true);
 
 
 	//grav->clearParticles();

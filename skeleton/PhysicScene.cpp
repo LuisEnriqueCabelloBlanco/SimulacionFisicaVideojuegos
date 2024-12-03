@@ -15,6 +15,11 @@ PhysicScene::PhysicScene(double simulatedSpeed, double realSpeed):gravityValue(-
 
 	gravityValue *= gravitySimulationFactor;
 }
+PhysicScene::PhysicScene(PxPhysics* px,const PxSceneDesc& desc)
+{
+	gPhysics = px;
+	gScene = px->createScene(desc);
+}
 PhysicScene::~PhysicScene()
 {
 	delete c;
@@ -97,7 +102,19 @@ void PhysicScene::initScene()
 	geom.box.x=200;
 	geom.box.y=0.5;
 	geom.box.z=200;
-	addParticle(Vector3(0, 0, 0),geom);
+
+	PxTransform pose(Vector3(0, 5, 0));
+	PxRigidStatic* statico = gPhysics->createRigidStatic(pose);
+
+	PxShape* s = CreateShape(PxSphereGeometry(1));
+	statico->attachShape(*s);
+
+	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 1));
+
+	gScene->addActor(*statico);
+
+	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
+	//par->setColor(Vector4(1, 1,1, 0));
 
 	//Proyectile* pr =createProyectile(1, Vector3(0, 0, 0), Vector3(7, 10, 0));
 	//pr->addForce(Vector3(0, -9.8, 0));
@@ -158,4 +175,6 @@ void PhysicScene::updateScene(double dt)
 			toDelete.push_back(it);
 		}
 	}
+	gScene->simulate(dt);
+	gScene->fetchResults(true);
 }

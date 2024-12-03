@@ -97,7 +97,7 @@ public:
 protected:
 	void addParticle()
 	{
-		Particle* pr = new Particle(basePosition + position(), particleShape, massInverse + uRandMassInverse(gen), 0.98, pColor, uRandLiveTime(gen));
+		Particle* pr = new Particle(basePosition + position(), particleShape, massInverse /*+ uRandMassInverse(gen)*/, 0.8, pColor, uRandLiveTime(gen));
 		//pr->accelerate(Vector3(0, -9.8, 0));
 		pr->setDeathFunc(particlesAliveCond);
 		pr->setVel(initVel());

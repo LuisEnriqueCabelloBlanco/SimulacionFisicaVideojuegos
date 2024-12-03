@@ -123,7 +123,7 @@ const double Particle::getBase()
 	switch (geomH.getType())
 	{
 	case PxGeometryType::eBOX:
-		val = geomH.box().halfExtents.x * 2*geomH.box().halfExtents.z *2;
+		val = geomH.box().halfExtents.x*2*geomH.box().halfExtents.z*2;
 		break;
 	case PxGeometryType::eSPHERE:
 		val = geomH.sphere().radius * geomH.sphere().radius*4;

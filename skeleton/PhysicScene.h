@@ -16,6 +16,7 @@ class PhysicScene
 public:
 	PhysicScene();
 	PhysicScene(double simulatedSpeed, double realSpeed);
+	PhysicScene(PxPhysics* px,const PxSceneDesc& desc);
 	virtual ~PhysicScene();
 
 	void keyPress(unsigned char key, const physx::PxTransform& camera);
@@ -63,5 +64,8 @@ private:
 	Particle* x;
 	Particle* y;
 	Particle* z;
+
+	PxPhysics* gPhysics;
+	PxScene* gScene;
 };
 
