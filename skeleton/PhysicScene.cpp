@@ -28,6 +28,8 @@ PhysicScene::~PhysicScene()
 	delete y;
 	delete z;
 
+	gScene->release();
+
 	for (auto p : particles) {
 		delete p;
 	}

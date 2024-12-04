@@ -1,6 +1,6 @@
 #include "SolidoRigido.h"
 
-SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene):
+SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,Vector4 color):
 	mScene(scene)
 {
 	rigid = px->createRigidDynamic(physx::PxTransform(pos));
@@ -23,8 +23,10 @@ SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px
 	default:
 		break;
 	}
+
+	
 	rigid->attachShape(*pShape);
-	mRenderItem = new RenderItem(pShape, rigid, Vector4(1,1,1,1));
+	mRenderItem = new RenderItem(pShape, rigid, color);
 	mScene->addActor(*rigid);
 }
 

@@ -38,7 +38,7 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
-
+PxCooking* cooking;
 
 
 using Generator = GeneradorParticulas<std::uniform_real_distribution<double>,
@@ -61,6 +61,10 @@ FloatForce* water = nullptr;
 
 double springTimer  = 0;
 
+static const PxVec3 convexVerts[] = { PxVec3(0,20,0),PxVec3(20,0,0),PxVec3(-20,0,0),PxVec3(0,0,20),
+	PxVec3(0,0,-20) };
+
+
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
@@ -77,6 +81,8 @@ void initPhysics(bool interactive)
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
+	cooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
+
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
@@ -85,84 +91,114 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 
-	//gScene = gPhysics->createScene(sceneDesc);
+	gScene = gPhysics->createScene(sceneDesc);
 
-	mPS = new PhysicScene(gPhysics,sceneDesc);
-
-	mPS->initScene();
-	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
-	GeometrySpec geom1;
-	geom1.shape = SPHERE;
-	geom1.sphere.radious = 0.5;
-	//geom1.box.x = 0.5;
-	//geom1.box.y = 0.5;
-	//geom1.box.z = 0.5;
-
-
-	parGen = new Generator(0, 4);
-	//parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
-	//parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
-	parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,0,0));
-	//parGen->setInitialVel(Vector3(-10,0,-10), Vector3(10,0, 10));
-	parGen->setParticlesPerSpawn(1);
-	parGen->setInitialPos(Vector3(0, 5, 0));
-	parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > -100;});
-	parGen->setParticleColor(Color(0, 1, 1, 1));
-	parGen->setMassInverse(0.02);
-	parGen->setShape(geom1);
-
-	grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
-	wind = new WindGenerator(mPS,Vector3(70, 10, 4), 1, 0,Vector3(0,10,0),Vector3(10,10,10));
-
-	tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(2, 5, 0), Vector3(20, 60, 20), 5,10);
-
+	//mPS = new PhysicScene(gPhysics,sceneDesc);
+	//
+	//mPS->initScene();
+	////a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
+	//GeometrySpec geom1;
+	//geom1.shape = SPHERE;
+	//geom1.sphere.radious = 0.5;
+	////geom1.box.x = 0.5;
+	////geom1.box.y = 0.5;
+	////geom1.box.z = 0.5;
+	//
+	//
+	//parGen = new Generator(0, 4);
+	////parGen->setInitialVel(Vector3(-50, 0, -50), Vector3(50, 30, 50));
+	////parGen->setInitialVel(Vector3(0, -5, 0), Vector3(0, -5,0));
+	//parGen->setInitalPosVar(Vector3(0,-5,0), Vector3(0,0,0));
+	////parGen->setInitialVel(Vector3(-10,0,-10), Vector3(10,0, 10));
+	//parGen->setParticlesPerSpawn(1);
+	//parGen->setInitialPos(Vector3(0, 5, 0));
+	//parGen->setParticlesAliveCond([](Particle* p) {return p->getPos().y > -100;});
+	//parGen->setParticleColor(Color(0, 1, 1, 1));
+	//parGen->setMassInverse(0.02);
+	//parGen->setShape(geom1);
+	//
+	//grav = new GravityGenerator(mPS,Vector3(0,-9.8,0));
+	//wind = new WindGenerator(mPS,Vector3(70, 10, 4), 1, 0,Vector3(0,10,0),Vector3(10,10,10));
+	//
+	//tornado = new WhirlwindGenerator(mPS, 2, 0, Vector3(2, 5, 0), Vector3(20, 60, 20), 5,10);
+	//
+	////parGen->addForceGen(grav);
+	////parGen->addForceGen(tornado);
+	//
+	//GeometrySpec geom;
+	//geom.shape = SPHERE;
+	//geom.sphere.radious = 1;
+	//
+	//Particle* mPar = new Particle(Vector3(20, 10, 0), geom, 1,0.98, Color(1, 0, 0, 1));
+	//
+	////mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
+	//
+	//mPS->addParticle(mPar);
+	//
+	//spring = new HookeForce(Vector3(0, 30, 0), mPar, 4, 5);
+	//
+	//mPar = new Particle(Vector3(20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
+	//
+	//Particle* mPar1 = new Particle(Vector3(-20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
+	//
+	//
+	//mPS->addParticle(mPar);
+	//mPS->addParticle(mPar1);
+	//
+	//hook = new RubberBand(mPar, mPar1,2,20);
+	//
+	////make slinky
+	//Vector3 pos = Vector3(0, 40, 0);
+	//Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
+	//mPS->addParticle(p1);
+	//for (int i = 0; i < 5; i++) {
+	//	pos += Vector3(0, 1, 0);
+	//	Particle* p2 = new Particle(pos, geom, 1, 0.98, Color(1, 0, 0, 1));
+	//	mPS->addParticle(p2);
+	//	slinky.push_back(new DualHookForce(p1, p2, 10, 5));
+	//	p1 = p2;
+	//}
+	//
+	//resistance = new WindGenerator(mPS, Vector3(0), 0.03, 0, Vector3(0,500,0), Vector3(1000));
+	//water = new FloatForce(mPS,1000, 0);
+	//
+	////parGen->removeForce(tornado);
 	//parGen->addForceGen(grav);
-	//parGen->addForceGen(tornado);
-
-	GeometrySpec geom;
-	geom.shape = SPHERE;
-	geom.sphere.radious = 1;
-
-	Particle* mPar = new Particle(Vector3(20, 10, 0), geom, 1,0.98, Color(1, 0, 0, 1));
+	//parGen->addForceGen(water);
+	//parGen->addForceGen(resistance);
+	//
+	//mPS->addForce(grav);
+	//mPS->addForce(resistance);
 	
-	//mPar->setDeathFunc([](Particle* p) {return p->getPos().y > 0; });
-
-	mPS->addParticle(mPar);
-
-	spring = new HookeForce(Vector3(0, 30, 0), mPar, 4, 5);
-
-	mPar = new Particle(Vector3(20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
-
-	Particle* mPar1 = new Particle(Vector3(-20, 10, 0), geom, 1, 0.98, Color(1, 0, 0, 1));
 
 
-	mPS->addParticle(mPar);
-	mPS->addParticle(mPar1);
+	PxRigidActor* actor = gPhysics->createRigidStatic(physx::PxTransform(Vector3(0,20,0)));
 
-	hook = new RubberBand(mPar, mPar1,2,20);
 
-	//make slinky
-	Vector3 pos = Vector3(0, 40, 0);
-	Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
-	mPS->addParticle(p1);
-	for (int i = 0; i < 5; i++) {
-		pos += Vector3(0, 1, 0);
-		Particle* p2 = new Particle(pos, geom, 1, 0.98, Color(1, 0, 0, 1));
-		mPS->addParticle(p2);
-		slinky.push_back(new DualHookForce(p1, p2, 10, 5));
-		p1 = p2;
-	}
 
-	resistance = new WindGenerator(mPS, Vector3(0), 0.03, 0, Vector3(0,500,0), Vector3(1000));
-	water = new FloatForce(mPS,1000, 0);
+	PxConvexMeshDesc convexDesc;
+	convexDesc.points.count = 5;
+	convexDesc.points.stride = sizeof(PxVec3);
+	convexDesc.points.data = convexVerts;
+	convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
 
-	//parGen->removeForce(tornado);
-	parGen->addForceGen(grav);
-	parGen->addForceGen(water);
-	parGen->addForceGen(resistance);
+	PxDefaultMemoryOutputStream buf;
+	PxConvexMeshCookingResult::Enum result;
 
-	mPS->addForce(grav);
-	mPS->addForce(resistance);
+
+	if (!cooking->cookConvexMesh(convexDesc, buf, &result))
+		std::cout << "la cague";
+		//return NULL;
+	PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
+	PxConvexMesh* convexMesh = gPhysics->createConvexMesh(input);
+
+	PxShape* aConvexShape = CreateShape(PxConvexMeshGeometry(convexMesh),gMaterial);
+
+	
+	//gScene->addActor(*actor);
+
+	RenderItem* rend = new RenderItem(aConvexShape,Color(0,1,0,1));
+
 	
 }
 
@@ -174,21 +210,21 @@ void stepPhysics(bool interactive, double t)
 {
 	springTimer += t;
 	PX_UNUSED(interactive);
-	if (springTimer < 2) {
-		spring->update(t);
-	}
+	//if (springTimer < 2) {
+	//	spring->update(t);
+	//}
 	//grav->update(t);
 	//wind->update(t);
-	hook->update(t);
+	//hook->update(t);
 	//tornado->update(t,mPS->getParticleList());
-	for (auto s : slinky) {
-		s->update(t);
-	}
+	//for (auto s : slinky) {
+	//	s->update(t);
+	//}
 	//water->update(t);
 	//resistance->update(t);
 
-	mPS->updateScene(t);
-	parGen->update(t);
+	//mPS->updateScene(t);
+	//parGen->update(t);
 	//a->integrate(t);
 	//gScene->simulate(t);
 	//gScene->fetchResults(true);
@@ -196,8 +232,8 @@ void stepPhysics(bool interactive, double t)
 
 	//grav->clearParticles();
 	//wind->clearParticles();
-	parGen->clearParticles();
-	mPS->clearParticles();
+	//parGen->clearParticles();
+	//mPS->clearParticles();
 }
 
 // Function to clean data
@@ -207,7 +243,8 @@ void cleanupPhysics(bool interactive)
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
-	gScene->release();
+	//gScene->release();
+	delete mPS;
 	gDispatcher->release();
 	// -----------------------------------------------------
 	gPhysics->release();	
@@ -216,7 +253,6 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
-	delete mPS;
 	delete parGen;
 	}
 
