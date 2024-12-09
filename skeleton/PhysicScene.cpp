@@ -4,6 +4,8 @@
 #include "core.hpp"
 #include <iostream>
 #include "SolidoRigido.h"
+#include "GravityGenerator.h"
+#include "WindGenerator.h"
 PhysicScene::PhysicScene()
 {
 
@@ -28,7 +30,6 @@ PhysicScene::~PhysicScene()
 	delete y;
 	delete z;
 
-	gScene->release();
 
 	for (auto p : particles) {
 		delete p;
@@ -37,6 +38,8 @@ PhysicScene::~PhysicScene()
 	for (auto f : forces) {
 		delete f;
 	}
+
+	gScene->release();
 }
 void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 {
@@ -124,13 +127,16 @@ void PhysicScene::initScene()
 
 	din->addForce(Vector3(10, 10, 0));*/
 
-	new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene);
+	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene)));
 
 	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
 	//par->setColor(Vector4(1, 1,1, 0));
 
 	//Proyectile* pr =createProyectile(1, Vector3(0, 0, 0), Vector3(7, 10, 0));
 	//pr->addForce(Vector3(0, -9.8, 0));
+	addForce(new GravityGenerator(this));
+	addForce(new WindGenerator(this, Vector3(0), 0.03, 0, Vector3(0, 500, 0), Vector3(1000)));
+	addForce(new WindGenerator(this, Vector3(20,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
 }
 
 Particle* PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double massInv,double damping,const Color& color)
@@ -178,8 +184,13 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 
 void PhysicScene::updateScene(double dt)
 {
+	for (auto s : muelles) {
+		s->update(dt);
+	}
+
 	for (auto f : forces) {
 		f->update(dt, particles);
+		f->update<SolidoRigido>(dt, solidosRigidos);
 	}
 
 	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end();++it) {
@@ -188,6 +199,9 @@ void PhysicScene::updateScene(double dt)
 			toDelete.push_back(it);
 		}
 	}
+
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
+	//first person camera
+	//GetCamera()->setEye(sol->getPose()+Vector3(0,5,0));
 }

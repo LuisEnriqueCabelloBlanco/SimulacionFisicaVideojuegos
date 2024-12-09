@@ -26,5 +26,9 @@ protected:
     
     Vector3 calculateSpringForce(Particle* A, Particle* B);
 
+
+    // Heredado vía ForceGenerator
+    Vector3 calculateForce(SolidoRigido* rig) override;
+
 };
 

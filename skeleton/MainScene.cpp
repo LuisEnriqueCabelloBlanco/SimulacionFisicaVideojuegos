@@ -3,7 +3,7 @@
 #include "WindGenerator.h"
 MainScene::MainScene()
 {
-	addForce(new GravityGenerator(this));
+	//addForce(new GravityGenerator(this));
 	addForce(new WindGenerator(this, Vector3(0), 1, 0));
 
 

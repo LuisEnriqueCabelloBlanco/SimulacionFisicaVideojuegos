@@ -36,3 +36,11 @@ SolidoRigido::~SolidoRigido()
 	rigid->release();
 	delete mRenderItem;
 }
+
+void SolidoRigido::update(double dt)
+{
+	if (livetime != 0) {
+		currentLivetime -= dt;
+	}
+	alive = aliveCond(this) && currentLivetime >= 0;
+}

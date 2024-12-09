@@ -9,3 +9,10 @@ Vector3 WindGenerator::calculateForce(Particle* par)
 
     return a+b;
 }
+
+Vector3 WindGenerator::calculateForce(SolidoRigido* rig)
+{
+    Vector3 a = k1 * (windSpeed - rig->getVelocity());
+    Vector3 b = k2 * (windSpeed.magnitude() - rig->getVelocity().magnitude()) * (windSpeed - rig->getVelocity());
+    return a+b;
+}

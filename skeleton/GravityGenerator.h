@@ -14,5 +14,9 @@ public:
 private:
     Vector3 gravityAcc;
 
+
+    // Heredado vía ForceGenerator
+    Vector3 calculateForce(SolidoRigido* rig) override;
+
 };
 

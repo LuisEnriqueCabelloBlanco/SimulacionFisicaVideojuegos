@@ -19,8 +19,11 @@ public:
     double k2;
     // Heredado vía ForceGenerator
     virtual Vector3 calculateForce(Particle* par) override;
+    // Heredado vía ForceGenerator
+    virtual Vector3 calculateForce(SolidoRigido* rig) override;
 
 protected:
     PxBounds3 boxBouds;
+
 };
 

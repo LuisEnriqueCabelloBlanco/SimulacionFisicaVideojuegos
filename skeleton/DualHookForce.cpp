@@ -25,3 +25,8 @@ Vector3 DualHookForce::calculateSpringForce(Particle* A, Particle* B)
 
 	return F;
 }
+
+Vector3 DualHookForce::calculateForce(SolidoRigido* rig)
+{
+	return Vector3();
+}

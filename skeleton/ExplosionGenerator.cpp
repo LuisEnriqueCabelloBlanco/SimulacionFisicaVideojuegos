@@ -19,3 +19,18 @@ Vector3 ExplosionGenerator::calculateForce(Particle* par)
 
     return force;
 }
+
+Vector3 ExplosionGenerator::calculateForce(SolidoRigido* rig)
+{
+	explosionMaxRange = rangeSpeed * time;
+	Vector3 force = Vector3(0);
+	Vector3 deltaPos = rig->getPose() - center;
+	float r = deltaPos.magnitude();
+	if (r < explosionMaxRange) {
+		force = (intensity / pow(r, 2)) *
+			deltaPos *
+			exp(-(time / timeConstant));
+	}
+
+	return force;
+}

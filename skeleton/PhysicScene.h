@@ -5,6 +5,8 @@
 #include <list>
 #include "Particle.h"
 #include "ForceGenerator.h"
+#include "SolidoRigido.h"
+#include "DualHookForce.h"
 
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
@@ -33,6 +35,7 @@ public:
 	Proyectile* createProyectile(double mass,const Vector3& initPos, const Vector3& initSpeed, const GeometrySpec& geom);
 
 	void addForce(ForceGenerator* force) { forces.push_back(force); }
+	void addForce(DualHookForce* force) { muelles.push_back(force); }
 
 	void removeForce(ForceGenerator* force) { forces.remove(force); }
 
@@ -57,6 +60,8 @@ private:
 
 	std::list<ForceGenerator*>forces;
 	std::list<Particle*>particles;
+	std::list<SolidoRigido*> solidosRigidos;
+	std::list<DualHookForce*> muelles;
 	std::list<ObjectListIt> toDelete;
 
 	//reference objects
@@ -67,5 +72,6 @@ private:
 
 	PxPhysics* gPhysics;
 	PxScene* gScene;
+	SolidoRigido* sol;
 };
 

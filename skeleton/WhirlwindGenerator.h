@@ -1,5 +1,6 @@
 #pragma once
 #include "WindGenerator.h"
+#include "SolidoRigido.h"
 class WhirlwindGenerator :
     public WindGenerator
 {
@@ -8,6 +9,7 @@ public:
 
     }
     virtual Vector3 calculateForce(Particle* par) override;
+    virtual Vector3 calculateForce(SolidoRigido* rig) override;
 private:
     double K;
     double ySpeed;
