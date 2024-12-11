@@ -4,7 +4,7 @@
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
-
+#include <iostream>
 
 using namespace physx;
 
@@ -49,7 +49,22 @@ namespace
 
 void motionCallback(int x, int y)
 {
+	//std::cout << x << "\n";
 	sCamera->handleMotion(x, y);
+
+	if (x < 20) {
+		glutWarpPointer(50, y);
+	}
+	if (x > glutGet(GLUT_WINDOW_WIDTH) - 20) {
+		glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH)-50, y);
+	}
+
+	if (y < 20) {
+		glutWarpPointer(x, 50);
+	}
+	if (y > glutGet(GLUT_WINDOW_HEIGHT) - 20) {
+		glutWarpPointer(x, glutGet(GLUT_WINDOW_HEIGHT) - 50);
+	}
 }
 
 void keyboardCallback(unsigned char key, int x, int y)
@@ -146,7 +161,7 @@ void renderLoop()
 	glutDisplayFunc(renderCallback);
 	glutKeyboardFunc(keyboardCallback);
 	glutMouseFunc(mouseCallback);
-	glutMotionFunc(motionCallback);
+	glutPassiveMotionFunc(motionCallback);
 	motionCallback(0,0);
 
 	atexit(exitCallback);

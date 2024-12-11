@@ -203,5 +203,5 @@ void PhysicScene::updateScene(double dt)
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
 	//first person camera
-	//GetCamera()->setEye(sol->getPose()+Vector3(0,5,0));
+	GetCamera()->setEye(sol->getPose()+Vector3(0,5,0));
 }

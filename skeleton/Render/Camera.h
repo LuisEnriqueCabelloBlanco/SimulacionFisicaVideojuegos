@@ -52,6 +52,7 @@ public:
 private:
 	physx::PxVec3	mEye;
 	physx::PxVec3	mDir;
+	double			motionSens = 0.5;
 	int				mMouseX;
 	int				mMouseY;
 };

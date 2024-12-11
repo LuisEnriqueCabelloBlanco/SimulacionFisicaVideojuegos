@@ -50,8 +50,8 @@ void Camera::handleMouse(int button, int state, int x, int y)
 {
 	PX_UNUSED(state);
 	PX_UNUSED(button);
-	mMouseX = x;
-	mMouseY = y;
+	//mMouseX = x;
+	//mMouseY = y;
 }
 
 bool Camera::handleKey(unsigned char key, int x, int y, float speed)
@@ -80,14 +80,15 @@ void Camera::handleAnalogMove(float x, float y)
 
 void Camera::handleMotion(int x, int y)
 {
+
 	int dx = mMouseX - x;
 	int dy = mMouseY - y;
 
 	PxVec3 viewY = mDir.cross(PxVec3(0,1,0)).getNormalized();
 
-	PxQuat qx(PxPi * dx / 180.0f, PxVec3(0,1,0));
+	PxQuat qx(PxPi * (dx*motionSens )/ 180.0f, PxVec3(0,1,0));
 	mDir = qx.rotate(mDir);
-	PxQuat qy(PxPi * dy / 180.0f, viewY);
+	PxQuat qy(PxPi * (dy*motionSens) / 180.0f, viewY);
 	mDir = qy.rotate(mDir);
 
 	mDir.normalize();
