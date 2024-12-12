@@ -301,6 +301,10 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 
 	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
 
+	//Activate trasparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	assert(glGetError() == GL_NO_ERROR);
 }
 
@@ -310,13 +314,12 @@ void renderShape(const PxShape& shape, const PxTransform& transform, const PxVec
 
 	if (shape.getFlags() & PxShapeFlag::eTRIGGER_SHAPE)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	// render object
 	glPushMatrix();
 	PxMat44 mtx(transform);
 	glMultMatrixf(reinterpret_cast<const float*>(&mtx));
 	assert(glGetError() == GL_NO_ERROR);
-	glColor4f(color.x, color.y, color.z, 1.0f);
+	glColor4f(color.x, color.y, color.z, color.w);
 	assert(glGetError() == GL_NO_ERROR);
 	renderGeometry(h, color.w < 0.999f);
 	assert(glGetError() == GL_NO_ERROR);

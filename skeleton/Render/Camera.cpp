@@ -32,6 +32,7 @@
 #include "Camera.h"
 #include <ctype.h>
 #include "foundation/PxMat33.h"
+#include "glut.h"
 
 using namespace physx;
 
@@ -86,15 +87,16 @@ void Camera::handleMotion(int x, int y)
 
 	PxVec3 viewY = mDir.cross(PxVec3(0,1,0)).getNormalized();
 
-	PxQuat qx(PxPi * (dx*motionSens )/ 180.0f, PxVec3(0,1,0));
+	PxQuat qx(PxPi * (dx*motionSens)/ 180.0f, PxVec3(0,1,0));
 	mDir = qx.rotate(mDir);
-	PxQuat qy(PxPi * (dy*motionSens) / 180.0f, viewY);
+	PxQuat qy(PxPi * (dy*motionSens*0.25) / 180.0f, viewY);
 	mDir = qy.rotate(mDir);
 
 	mDir.normalize();
 
-	mMouseX = x;
-	mMouseY = y;
+	
+	mMouseX = glutGet(GLUT_WINDOW_WIDTH)/2;
+	mMouseY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
 }
 
 PxTransform Camera::getTransform() const

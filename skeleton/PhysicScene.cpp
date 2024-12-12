@@ -115,7 +115,7 @@ void PhysicScene::initScene()
 	PxRigidStatic* statico = gPhysics->createRigidStatic(pose);
 	PxShape* s = CreateShape(PxBoxGeometry(100,0.01,100));
 	statico->attachShape(*s);
-	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 1));
+	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 0.5));
 	gScene->addActor(*statico);
 
 	/*PxTransform pose1(Vector3(0, 5, 0));

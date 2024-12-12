@@ -52,19 +52,7 @@ void motionCallback(int x, int y)
 	//std::cout << x << "\n";
 	sCamera->handleMotion(x, y);
 
-	if (x < 20) {
-		glutWarpPointer(50, y);
-	}
-	if (x > glutGet(GLUT_WINDOW_WIDTH) - 20) {
-		glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH)-50, y);
-	}
-
-	if (y < 20) {
-		glutWarpPointer(x, 50);
-	}
-	if (y > glutGet(GLUT_WINDOW_HEIGHT) - 20) {
-		glutWarpPointer(x, glutGet(GLUT_WINDOW_HEIGHT) - 50);
-	}
+	glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH)/2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
 }
 
 void keyboardCallback(unsigned char key, int x, int y)
