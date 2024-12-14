@@ -282,6 +282,7 @@
     <ClInclude Include="FloatForce.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="GeneradorParticulas.h" />
+    <ClInclude Include="GeneradorSolidoRigido.h" />
     <ClInclude Include="GravityGenerator.h" />
     <ClInclude Include="HookeForce.h" />
     <ClInclude Include="MainScene.h" />

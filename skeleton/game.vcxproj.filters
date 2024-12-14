@@ -97,6 +97,7 @@
     </ClInclude>
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="SolidoRigido.h" />
+    <ClInclude Include="GeneradorSolidoRigido.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

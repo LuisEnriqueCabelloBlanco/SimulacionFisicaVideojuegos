@@ -6,6 +6,7 @@
 #include "SolidoRigido.h"
 #include "GravityGenerator.h"
 #include "WindGenerator.h"
+#include "GeneradorSolidoRigido.h"
 PhysicScene::PhysicScene()
 {
 
@@ -109,7 +110,7 @@ void PhysicScene::initScene()
 	geom.box.y=2;
 	geom.box.z=2;
 
-
+	
 
 	PxTransform pose(Vector3(0, 0, 0));
 	PxRigidStatic* statico = gPhysics->createRigidStatic(pose);
@@ -127,8 +128,13 @@ void PhysicScene::initScene()
 
 	din->addForce(Vector3(10, 10, 0));*/
 
-	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene)));
+	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene,5,Color(1,1,1,1))));
 
+
+	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 0.5,1 }));
+
+	generators.front()->setInitialPos(Vector3(10, 20, 0));
+	generators.front()->setInitalPosVar(Vector3(-10, 0, 0), Vector3(10, 0, 5));
 	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
 	//par->setColor(Vector4(1, 1,1, 0));
 
@@ -136,7 +142,7 @@ void PhysicScene::initScene()
 	//pr->addForce(Vector3(0, -9.8, 0));
 	addForce(new GravityGenerator(this));
 	addForce(new WindGenerator(this, Vector3(0), 0.03, 0, Vector3(0, 500, 0), Vector3(1000)));
-	addForce(new WindGenerator(this, Vector3(20,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
+	addForce(new WindGenerator(this, Vector3(10,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
 }
 
 Particle* PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double massInv,double damping,const Color& color)
@@ -169,7 +175,6 @@ void PhysicScene::clearParticles()
 		delete (*toDelete.front());
 		particles.erase(toDelete.front());
 		toDelete.pop_front();
-		
 	}
 }
 
@@ -200,8 +205,22 @@ void PhysicScene::updateScene(double dt)
 		}
 	}
 
+	for (auto it = solidosRigidos.begin(); it != solidosRigidos.end();) {
+		(*it)->update(dt);
+		if (!(*it)->getAlive()) {
+			delete (*it);
+			it = solidosRigidos.erase(it);
+		}
+		else { ++it; }
+	}
+
+	for (auto gen : generators) {
+		gen->update(dt);
+	}
+
+
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
 	//first person camera
-	GetCamera()->setEye(sol->getPose()+Vector3(0,5,0));
+	//GetCamera()->setEye(sol->getPose()+Vector3(0,0,0));
 }

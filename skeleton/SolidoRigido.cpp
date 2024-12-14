@@ -1,7 +1,7 @@
 #include "SolidoRigido.h"
 
-SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,Vector4 color):
-	mScene(scene)
+SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,double livetime,Vector4 color):
+	mScene(scene),livetime(livetime)
 {
 	rigid = px->createRigidDynamic(physx::PxTransform(pos));
 	physx::PxShape* pShape;
@@ -23,18 +23,19 @@ SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px
 	default:
 		break;
 	}
-
-	
+	currentLivetime = livetime;
 	rigid->attachShape(*pShape);
 	mRenderItem = new RenderItem(pShape, rigid, color);
 	mScene->addActor(*rigid);
+	aliveCond = [this](SolidoRigido* rb) {return true;};
 }
 
 SolidoRigido::~SolidoRigido()
 {
 	mScene->removeActor(*rigid);
 	rigid->release();
-	delete mRenderItem;
+	mRenderItem->release();
+	//delete mRenderItem;
 }
 
 void SolidoRigido::update(double dt)

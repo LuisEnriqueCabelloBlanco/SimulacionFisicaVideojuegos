@@ -7,6 +7,7 @@
 #include "ForceGenerator.h"
 #include "SolidoRigido.h"
 #include "DualHookForce.h"
+#include "GeneradorSolidoRigido.h"
 
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
@@ -42,6 +43,8 @@ public:
 	void clearParticles();
 
 	void updateScene(double dt);
+
+	physx::PxScene* getScene()const { return gScene; }
 private:
 	/// <summary>
 	/// makes the spheres representing the reference axis
@@ -63,6 +66,7 @@ private:
 	std::list<SolidoRigido*> solidosRigidos;
 	std::list<DualHookForce*> muelles;
 	std::list<ObjectListIt> toDelete;
+	std::list<GeneradorSolidoRigido<>*> generators;
 
 	//reference objects
 	Particle* c;

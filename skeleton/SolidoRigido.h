@@ -5,10 +5,11 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
+
 class SolidoRigido
 {
 public:
-	SolidoRigido(Vector3 pos, GeometrySpec& geo,physx::PxPhysics* px,physx::PxScene* scene,Vector4 color = Vector4(1,1,1,1));
+	SolidoRigido(Vector3 pos, GeometrySpec& geo,physx::PxPhysics* px,physx::PxScene* scene,double livetime =0,Vector4 color = Vector4(1,1,1,1));
 	~SolidoRigido();
 
 	Vector3 getPose()const { return rigid->getGlobalPose().p; }
@@ -17,11 +18,14 @@ public:
 	void update(double dt);
 	bool getAlive()const { return alive; }
 
+	void setDeathFunc(const std::function<bool(SolidoRigido* p)>& f) { aliveCond = f; }
+	void setMass(physx::PxReal mass) { rigid->setMass(mass); }
+	void setVelocity(Vector3 vel) { rigid->setLinearVelocity(vel); }
 private:
 	bool alive = true;
 	std::function<bool(SolidoRigido* p)> aliveCond;
-	double livetime;
 	double currentLivetime;
+	double livetime;
 
 	physx::PxScene* mScene;
 	RenderItem* mRenderItem;
