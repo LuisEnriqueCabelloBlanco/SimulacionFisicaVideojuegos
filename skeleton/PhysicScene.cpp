@@ -95,6 +95,18 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
+	case 'Q': {
+
+		GeometrySpec geom;
+		geom.shape = SPHERE;
+		geom.sphere.radious = 0.25;
+
+		SolidoRigido* rb = new SolidoRigido(camera.p, geom, &gScene->getPhysics(), gScene);
+		rb->setVelocity(GetCamera()->getDir()*10);
+		rb->setDeathFunc([](SolidoRigido* s) {return s->getPose().y > 1; });
+		solidosRigidos.push_back(rb);
+		break;
+	}
 	default:
 		break;
 	}
@@ -131,10 +143,13 @@ void PhysicScene::initScene()
 	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene,5,Color(1,1,1,1))));
 
 
-	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 0.5,1 }));
+	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 1,3 },{0.01,1}));
 
-	generators.front()->setInitialPos(Vector3(10, 20, 0));
-	generators.front()->setInitalPosVar(Vector3(-10, 0, 0), Vector3(10, 0, 5));
+	generators.front()->setParticlesPerSpawn(10);
+	generators.front()->setMassInverse(2);
+	generators.front()->setInitialPos(Vector3(10, 30, 0));
+	generators.front()->setInitalPosVar(Vector3(-10, -5, -10), Vector3(10, 0, 10));
+	generators.front()->setInitialVel(Vector3(0, 10, 0), Vector3(0, 20, 0));
 	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
 	//par->setColor(Vector4(1, 1,1, 0));
 
@@ -223,4 +238,8 @@ void PhysicScene::updateScene(double dt)
 	gScene->fetchResults(true);
 	//first person camera
 	//GetCamera()->setEye(sol->getPose()+Vector3(0,0,0));
+
+	for (auto gen : generators) {
+		gen->clearParticles();
+	}
 }

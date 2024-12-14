@@ -93,7 +93,7 @@ public:
 protected:
 	void addParticle()
 	{
-		SolidoRigido* rb = new SolidoRigido(basePosition + position(), particleShape, &scene->getPhysics(), scene);
+		SolidoRigido* rb = new SolidoRigido(basePosition + position(), particleShape, &scene->getPhysics(), scene,uRandLiveTime(gen));
 
 		rb->setMass(mass);
 		rb->setDeathFunc(particlesAliveCond);
