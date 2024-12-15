@@ -321,7 +321,7 @@ void renderShape(const PxShape& shape, const PxTransform& transform, const PxVec
 	assert(glGetError() == GL_NO_ERROR);
 	glColor4f(color.x, color.y, color.z, color.w);
 	assert(glGetError() == GL_NO_ERROR);
-	renderGeometry(h, color.w < 0.999f);
+	renderGeometry(h, color.w < 0.001f);
 	assert(glGetError() == GL_NO_ERROR);
 	glPopMatrix();
 	assert(glGetError() == GL_NO_ERROR);

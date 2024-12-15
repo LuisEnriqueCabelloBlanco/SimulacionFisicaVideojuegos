@@ -21,7 +21,7 @@ template<typename RanPos = std::uniform_real_distribution<double>,
 public:
 
 	GeneradorSolidoRigido(PxScene* pScene,std::pair<double, double> liveTime, std::pair<double, double> randGentime = { 1.0,1.0 }) :
-		uRandGenTime(randGentime.first, randGentime.second), uRandLiveTime(liveTime.first, liveTime.second), uRandMassInverse(-0.2, 0.2) {
+		uRandGenTime(randGentime.first, randGentime.second), uRandLiveTime(liveTime.first, liveTime.second), uRandMassInverse(0, 0.1) {
 		currentTime = 0;
 		nextSpawnTime = particleRate;
 		particlesAliveCond = [](SolidoRigido* p) {return true; };
@@ -61,7 +61,7 @@ public:
 	inline void setInitalPosVar(const Vector3& a, const Vector3& b) { position.setRandom(a, b); };
 	void setInitialVel(const Vector3& a, const Vector3& b) { initVel.setRandom(a, b); };
 	void setParticlesPerSpawn(int pCount) { particlesPerSpawn = pCount; }
-	void setParticlesAliveCond(const std::function<bool(Particle* par)>& func) { particlesAliveCond = func; }
+	void setParticlesAliveCond(const std::function<bool(SolidoRigido* par)>& func) { particlesAliveCond = func; }
 	void setShape(const GeometrySpec& geom) { particleShape = geom; }
 	void setInitialPos(const Vector3& iniPos) { basePosition = iniPos; }
 	void setParticleColor(const Color& col) { pColor = col; }
@@ -93,11 +93,12 @@ public:
 protected:
 	void addParticle()
 	{
-		SolidoRigido* rb = new SolidoRigido(basePosition + position(), particleShape, &scene->getPhysics(), scene,uRandLiveTime(gen));
+		SolidoRigido* rb = new SolidoRigido(basePosition + position(), particleShape, &scene->getPhysics(), scene,uRandLiveTime(gen),pColor);
 
-		rb->setMass(mass);
+		rb->setMass(mass+uRandMassInverse(gen));
 		rb->setDeathFunc(particlesAliveCond);
 		rb->setVelocity(initVel());
+		rb->getRigid()->setName("Particula");
 
 		mParticles.push_back(rb);
 	}

@@ -7,6 +7,9 @@
 #include "GravityGenerator.h"
 #include "WindGenerator.h"
 #include "GeneradorSolidoRigido.h"
+#include "HookeForce.h"
+#include <string>
+
 PhysicScene::PhysicScene()
 {
 
@@ -21,9 +24,13 @@ PhysicScene::PhysicScene(double simulatedSpeed, double realSpeed):gravityValue(-
 }
 PhysicScene::PhysicScene(PxPhysics* px,const PxSceneDesc& desc)
 {
+	//desc.simulationEventCallback = this;
 	gPhysics = px;
 	gScene = px->createScene(desc);
+	floorMaterial = gPhysics->createMaterial(1, 1, 0);
+	gScene->setSimulationEventCallback(this);
 }
+
 PhysicScene::~PhysicScene()
 {
 	delete c;
@@ -45,7 +52,7 @@ PhysicScene::~PhysicScene()
 void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
-	Particle* a = (*particles.begin());
+	//Particle* a = (*particles.begin());
 	switch (toupper(key))
 	{
 		//case 'B': break;
@@ -54,28 +61,6 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 	{
 		break;
 	}
-	case 'I':
-	{
-		a->accelerate(Vector3(0, 0, -1));
-		break;
-	}
-	case 'K':
-	{
-		a->accelerate(Vector3(0, 0, 1));
-		break;
-	}
-	case 'J':
-	{
-		a->accelerate(Vector3(-1, 0, 0));
-		break;
-	}
-	case 'L':
-	{
-		a->accelerate(Vector3(1, 0, 0));
-		break;
-	}
-
-
 	case '1': 
 	{
 		Proyectile * pr = createProyectile(0.005, Vector3(0, 0, 0), Vector3(2, 1, 0).getNormalized()*30);
@@ -102,10 +87,18 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		geom.sphere.radious = 0.25;
 
 		SolidoRigido* rb = new SolidoRigido(camera.p, geom, &gScene->getPhysics(), gScene);
-		rb->setVelocity(GetCamera()->getDir()*10);
+		rb->setVelocity(GetCamera()->getDir()*40);
 		rb->setDeathFunc([](SolidoRigido* s) {return s->getPose().y > 1; });
+		rb->getRigid()->setName("Bala");
+		rb->getRigid()->userData = sol;
 		solidosRigidos.push_back(rb);
 		break;
+	}
+	case 'V': {
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 8;
+
+		//sol->addForce(aux);
+		sol->setVelocity(aux);
 	}
 	default:
 		break;
@@ -117,47 +110,62 @@ void PhysicScene::initScene()
 	makeAxis(20,0.5);
 
 	GeometrySpec geom;
-	geom.shape = CUBE;
+	geom.shape = SPHERE;
 	geom.box.x=2;
 	geom.box.y=2;
 	geom.box.z=2;
+	geom.sphere.radious = 0.5;
 
 	
-
+	//Suelo
 	PxTransform pose(Vector3(0, 0, 0));
 	PxRigidStatic* statico = gPhysics->createRigidStatic(pose);
-	PxShape* s = CreateShape(PxBoxGeometry(100,0.01,100));
+	PxShape* s = CreateShape(PxBoxGeometry(100,0.01,100),floorMaterial);
+	//s->setMaterials();
 	statico->attachShape(*s);
 	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 0.5));
 	gScene->addActor(*statico);
 
-	/*PxTransform pose1(Vector3(0, 5, 0));
-	PxRigidDynamic* din = gPhysics->createRigidDynamic(pose1);
-	PxShape* s1 = CreateShape(PxBoxGeometry(1,1,1));
-	din->attachShape(*s1);
-	new RenderItem(s1, din, Color(0.5, 0.5, 1, 1));
-	gScene->addActor(*din);
 
-	din->addForce(Vector3(10, 10, 0));*/
+	//edifisi
+	PxTransform pose1(Vector3(0, 0, 20));
+	PxRigidStatic* statico1 = gPhysics->createRigidStatic(pose1);
+	PxShape* s1 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
+	//s->setMaterials();
+	statico1->attachShape(*s1);
+	RenderItem* obj1 = new RenderItem(s1, statico1, Color(1, 1, 0, 1));
+	gScene->addActor(*statico1);
 
-	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(0, 20, 0), geom, gPhysics, gScene,5,Color(1,1,1,1))));
 
+	//Main Character
+	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(10, 10, 0), geom, gPhysics, gScene,0,Color(1,1,1,0))));
+	sol->unrender();
+	sol->getRigid()->setName("Manuel");
+	sol->getRigid()->setMassSpaceInertiaTensor(Vector3(0, 0, 0));
 
-	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 1,3 },{0.01,1}));
+	//Build rain
 
-	generators.front()->setParticlesPerSpawn(10);
-	generators.front()->setMassInverse(2);
+	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 5,10 },{0.01,0.3}));
+	GeometrySpec parGeom;
+	parGeom.shape = SPHERE;
+	parGeom.sphere.radious = 0.05;
+
+	generators.front()->setShape(parGeom);
+	generators.front()->setParticleColor(Color(0,0,0.5,0.1));
+	generators.front()->setParticlesPerSpawn(100);
+	generators.front()->setMassInverse(0.02);
 	generators.front()->setInitialPos(Vector3(10, 30, 0));
 	generators.front()->setInitalPosVar(Vector3(-10, -5, -10), Vector3(10, 0, 10));
+	generators.front()->setParticlesAliveCond([](SolidoRigido* rb) {return rb->getPose().y > -1; });
 	generators.front()->setInitialVel(Vector3(0, 10, 0), Vector3(0, 20, 0));
-	//Particle* par =addParticle(Vector3(0, 0, 0),geom,0,0.98,Color(0,0,0,0));
-	//par->setColor(Vector4(1, 1,1, 0));
+	generators.front()->addForceGen(new WindGenerator(this, Vector3(5, 0, 0), 0.03, 0, Vector3(0, 0, 0), Vector3(1000)));
 
-	//Proyectile* pr =createProyectile(1, Vector3(0, 0, 0), Vector3(7, 10, 0));
-	//pr->addForce(Vector3(0, -9.8, 0));
 	addForce(new GravityGenerator(this));
+	WindGenerator* wind;
 	addForce(new WindGenerator(this, Vector3(0), 0.03, 0, Vector3(0, 500, 0), Vector3(1000)));
-	addForce(new WindGenerator(this, Vector3(10,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
+	//addForce(new WindGenerator(this, Vector3(10,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
+	//addForce(new HookeForce(Vector3(20,20,10),sol,4,5));
+
 }
 
 Particle* PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double massInv,double damping,const Color& color)
@@ -201,12 +209,57 @@ void PhysicScene::makeAxis(float axisFactor,float sphereRadius)
 	z = new Particle(Vector3(0, 0, axisFactor), Vector3(0), 0.5); z->setColor(Vector4(0, 0, 1, 1));
 }
 
+void PhysicScene::onConstraintBreak(PxConstraintInfo* constraints, PxU32 count)
+{
+}
+
+void PhysicScene::onWake(PxActor** actors, PxU32 count)
+{
+}
+
+void PhysicScene::onSleep(PxActor** actors, PxU32 count)
+{
+}
+
+void PhysicScene::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
+{
+	if (pairs[0].events.isSet(physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)) {
+		for (auto par : solidosRigidos) {
+			if (pairHeader.actors[0] == par->getRigid()) {
+				par->onCollision(pairHeader.actors[1]);
+			}
+			else if (pairHeader.actors[1] == par->getRigid()) {
+				par->onCollision(pairHeader.actors[0]);
+			}
+
+			//if (strcmp("Bala", pairHeader.actors[1]->getName())) {
+			//	if (hook != nullptr) delete hook;
+			//	hook = new HookeForce(pairHeader.actors[1]->getGlobalPose().p, sol, 5, 5);
+
+			//}
+		}
+	}
+}
+
+void PhysicScene::onTrigger(PxTriggerPair* pairs, PxU32 count)
+{
+}
+
+void PhysicScene::onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count)
+{
+}
+
 
 void PhysicScene::updateScene(double dt)
 {
 	for (auto s : muelles) {
 		s->update(dt);
 	}
+	
+	if (hook != nullptr) {
+		hook->update(dt);
+	}
+
 
 	for (auto f : forces) {
 		f->update(dt, particles);
@@ -237,7 +290,7 @@ void PhysicScene::updateScene(double dt)
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
 	//first person camera
-	//GetCamera()->setEye(sol->getPose()+Vector3(0,0,0));
+	GetCamera()->setEye(sol->getPose()+Vector3(0,3,0));
 
 	for (auto gen : generators) {
 		gen->clearParticles();

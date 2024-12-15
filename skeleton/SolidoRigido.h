@@ -21,6 +21,11 @@ public:
 	void setDeathFunc(const std::function<bool(SolidoRigido* p)>& f) { aliveCond = f; }
 	void setMass(physx::PxReal mass) { rigid->setMass(mass); }
 	void setVelocity(Vector3 vel) { rigid->setLinearVelocity(vel); }
+	void unrender() { mRenderItem->release(); }
+
+	void onCollision(physx::PxRigidActor* act);
+
+	physx::PxRigidDynamic* getRigid() { return rigid; }
 private:
 	bool alive = true;
 	std::function<bool(SolidoRigido* p)> aliveCond;

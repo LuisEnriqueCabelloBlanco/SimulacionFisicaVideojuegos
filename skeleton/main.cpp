@@ -31,7 +31,7 @@ PxFoundation*			gFoundation = NULL;
 PxPhysics*				gPhysics	= NULL;
 
 
-PxMaterial*				gMaterial	= NULL;
+PxMaterial* gMaterial = NULL;
 
 PxPvd*                  gPvd        = NULL;
 
@@ -105,7 +105,7 @@ void initPhysics(bool interactive)
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	gMaterial = gPhysics->createMaterial(0.3, 1, 0);
 
 	cooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 
@@ -117,11 +117,14 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 
+
 	gScene = gPhysics->createScene(sceneDesc);
 
 	mPS = new PhysicScene(gPhysics,sceneDesc);
 	
 	mPS->initScene();
+
+
 	//a = new Particle(Vector3(0, 0, 0), Vector3(1,0,0),0.98);
 	//GeometrySpec geom1;
 	//geom1.shape = SPHERE;
@@ -175,17 +178,20 @@ void initPhysics(bool interactive)
 	//mPS->addForce(hook);
 
 	//make slinky
-	Vector3 pos = Vector3(0, 40, 0);
-	Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
+	//Vector3 pos = Vector3(0, 40, 0);
+	//Particle* p1 = new Particle(pos, geom, 0, 0.98, Color(1, 0, 0, 1));
 
-	mPS->addParticle(p1);
-	for (int i = 0; i < 5; i++) {
-		pos += Vector3(0, 1, 0);
-		Particle* p2 = new Particle(pos, geom, 1, 0.98, Color(1, 0, 0, 1));
-		mPS->addParticle(p2);
-		mPS->addForce(new DualHookForce(p1, p2, 10, 8));
-		p1 = p2;
-	}
+	//mPS->addParticle(p1);
+	//for (int i = 0; i < 5; i++) {
+	//	pos += Vector3(0, 1, 0);
+	//	Particle* p2 = new Particle(pos, geom, 1, 0.98, Color(1, 0, 0, 1));
+	//	mPS->addParticle(p2);
+	//	mPS->addForce(new DualHookForce(p1, p2, 10, 8));
+	//	p1 = p2;
+	//}
+
+
+
 	//
 	//resistance = new WindGenerator(mPS, Vector3(0), 0.03, 0, Vector3(0,500,0), Vector3(1000));
 	//water = new FloatForce(mPS,1000, 0);
@@ -315,6 +321,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
+	std::cout << "HolaBuenasTardes\n";
 }
 
 

@@ -1,4 +1,5 @@
 #include "SolidoRigido.h"
+#include <iostream>
 
 SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,double livetime,Vector4 color):
 	mScene(scene),livetime(livetime)
@@ -23,6 +24,7 @@ SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px
 	default:
 		break;
 	}
+	rigid->userData = this;
 	currentLivetime = livetime;
 	rigid->attachShape(*pShape);
 	mRenderItem = new RenderItem(pShape, rigid, color);
@@ -44,4 +46,15 @@ void SolidoRigido::update(double dt)
 		currentLivetime -= dt;
 	}
 	alive = aliveCond(this) && currentLivetime >= 0;
+}
+
+void SolidoRigido::onCollision(physx::PxRigidActor* act)
+{
+	if (act->userData != nullptr) {
+		SolidoRigido* other = (SolidoRigido*) act->userData;
+		printf("%s colisiono con %s\n",rigid->getName(),other->rigid->getName());
+	}
+	else {
+		printf("%s colisiono con objeto estatico\n",rigid->getName());
+	}
 }
