@@ -4,7 +4,8 @@
 SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,double livetime,Vector4 color):
 	mScene(scene),livetime(livetime)
 {
-	rigid = px->createRigidDynamic(physx::PxTransform(pos));
+	physx::PxTransform tr(pos);
+	rigid = px->createRigidDynamic(tr);
 	physx::PxShape* pShape;
 
 	switch (geom.shape)

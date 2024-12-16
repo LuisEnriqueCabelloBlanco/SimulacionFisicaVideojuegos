@@ -36,7 +36,8 @@ struct GeometrySpec {
 		} capsule;
 	};
 
-
+	GeometrySpec(double r) { shape = SPHERE; sphere.radious = r; }
+	GeometrySpec() = default;
 };
 
 #endif

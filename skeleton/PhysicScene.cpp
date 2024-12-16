@@ -8,6 +8,8 @@
 #include "WindGenerator.h"
 #include "GeneradorSolidoRigido.h"
 #include "HookeForce.h"
+#include "SpiderWeb.h"
+#include "SpiderSling.h"
 #include <string>
 
 PhysicScene::PhysicScene()
@@ -59,6 +61,8 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		//case ' ':	break;
 	case ' ':
 	{
+		if (hook != nullptr) delete hook;
+		hook = nullptr;
 		break;
 	}
 	case '1': 
@@ -82,23 +86,23 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'Q': {
 
-		GeometrySpec geom;
-		geom.shape = SPHERE;
-		geom.sphere.radious = 0.25;
+		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this,gScene);
 
-		SolidoRigido* rb = new SolidoRigido(camera.p, geom, &gScene->getPhysics(), gScene);
-		rb->setVelocity(GetCamera()->getDir()*40);
-		rb->setDeathFunc([](SolidoRigido* s) {return s->getPose().y > 1; });
-		rb->getRigid()->setName("Bala");
-		rb->getRigid()->userData = sol;
-		solidosRigidos.push_back(rb);
 		break;
 	}
-	case 'V': {
+	case 'W': {
 		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 8;
 
 		//sol->addForce(aux);
 		sol->setVelocity(aux);
+		break;
+	}
+	case 'S':{
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 8;
+
+		//sol->addForce(aux);
+		sol->setVelocity(-aux);
+		break;
 	}
 	default:
 		break;
@@ -114,7 +118,7 @@ void PhysicScene::initScene()
 	geom.box.x=2;
 	geom.box.y=2;
 	geom.box.z=2;
-	geom.sphere.radious = 0.5;
+	geom.sphere.radious = 1.5;
 
 	
 	//Suelo
@@ -128,10 +132,9 @@ void PhysicScene::initScene()
 
 
 	//edifisi
-	PxTransform pose1(Vector3(0, 0, 20));
+	PxTransform pose1(Vector3(0, 10, 20));
 	PxRigidStatic* statico1 = gPhysics->createRigidStatic(pose1);
 	PxShape* s1 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
-	//s->setMaterials();
 	statico1->attachShape(*s1);
 	RenderItem* obj1 = new RenderItem(s1, statico1, Color(1, 1, 0, 1));
 	gScene->addActor(*statico1);
@@ -142,7 +145,7 @@ void PhysicScene::initScene()
 	sol->unrender();
 	sol->getRigid()->setName("Manuel");
 	sol->getRigid()->setMassSpaceInertiaTensor(Vector3(0, 0, 0));
-
+	sol->getRigid()->setMass(70);
 	//Build rain
 
 	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 5,10 },{0.01,0.3}));
@@ -163,7 +166,7 @@ void PhysicScene::initScene()
 	addForce(new GravityGenerator(this));
 	WindGenerator* wind;
 	addForce(new WindGenerator(this, Vector3(0), 0.03, 0, Vector3(0, 500, 0), Vector3(1000)));
-	//addForce(new WindGenerator(this, Vector3(10,0,0), 1, 0, Vector3(0, 0, 0), Vector3(1000)));
+	addForce(new WindGenerator(this, Vector3(10,0,0), 0.03, 0, Vector3(0, 0, 0), Vector3(1000)));
 	//addForce(new HookeForce(Vector3(20,20,10),sol,4,5));
 
 }
@@ -295,4 +298,13 @@ void PhysicScene::updateScene(double dt)
 	for (auto gen : generators) {
 		gen->clearParticles();
 	}
+}
+
+void PhysicScene::createWeb(Vector3 position)
+{
+	if (hook != nullptr) {
+		delete hook;
+	}
+
+	hook = new SpiderSling(position,0.5,sol);
 }

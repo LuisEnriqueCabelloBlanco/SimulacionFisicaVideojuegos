@@ -29,6 +29,7 @@ public:
 
 	Particle* addParticle(const Vector3& pos, const GeometrySpec& geom,double massInv=0, double damping = 0.98, const Color& color = Color(1,1,1,1));
 	void addParticle(Particle* par) { particles.push_back(par); }
+	void addParticle(SolidoRigido* sol) { solidosRigidos.push_back(sol); }
 
 	const std::list<Particle*>& getParticleList() const { return particles; }
 	
@@ -46,6 +47,8 @@ public:
 	void updateScene(double dt);
 
 	physx::PxScene* getScene()const { return gScene; }
+
+	void createWeb(Vector3 position);
 private:
 	/// <summary>
 	/// makes the spheres representing the reference axis
@@ -89,5 +92,7 @@ private:
 	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override;
 	void onTrigger(PxTriggerPair* pairs, PxU32 count) override;
 	void onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) override;
+
+	
 };
 

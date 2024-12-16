@@ -47,6 +47,8 @@
     </ClCompile>
     <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="SolidoRigido.cpp" />
+    <ClCompile Include="SpiderWeb.cpp" />
+    <ClCompile Include="SpiderSling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -98,6 +100,8 @@
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="SolidoRigido.h" />
     <ClInclude Include="GeneradorSolidoRigido.h" />
+    <ClInclude Include="SpiderWeb.h" />
+    <ClInclude Include="SpiderSling.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

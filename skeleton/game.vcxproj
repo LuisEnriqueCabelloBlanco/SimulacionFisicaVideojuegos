@@ -270,6 +270,8 @@
     <ClCompile Include="Render\Render.cpp" />
     <ClCompile Include="RubberBand.cpp" />
     <ClCompile Include="SolidoRigido.cpp" />
+    <ClCompile Include="SpiderSling.cpp" />
+    <ClCompile Include="SpiderWeb.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WhirlwindGenerator.cpp" />
     <ClCompile Include="WindGenerator.cpp" />
@@ -294,6 +296,8 @@
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="RubberBand.h" />
     <ClInclude Include="SolidoRigido.h" />
+    <ClInclude Include="SpiderSling.h" />
+    <ClInclude Include="SpiderWeb.h" />
     <ClInclude Include="Vec3Rand.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="WhirlwindGenerator.h" />

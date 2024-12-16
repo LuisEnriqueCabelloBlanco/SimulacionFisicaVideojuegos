@@ -10,7 +10,7 @@ class SolidoRigido
 {
 public:
 	SolidoRigido(Vector3 pos, GeometrySpec& geo,physx::PxPhysics* px,physx::PxScene* scene,double livetime =0,Vector4 color = Vector4(1,1,1,1));
-	~SolidoRigido();
+	virtual ~SolidoRigido();
 
 	Vector3 getPose()const { return rigid->getGlobalPose().p; }
 	Vector3 getVelocity()const { return rigid->getLinearVelocity(); }
@@ -23,10 +23,10 @@ public:
 	void setVelocity(Vector3 vel) { rigid->setLinearVelocity(vel); }
 	void unrender() { mRenderItem->release(); }
 
-	void onCollision(physx::PxRigidActor* act);
+	virtual void onCollision(physx::PxRigidActor* act);
 
 	physx::PxRigidDynamic* getRigid() { return rigid; }
-private:
+protected:
 	bool alive = true;
 	std::function<bool(SolidoRigido* p)> aliveCond;
 	double currentLivetime;

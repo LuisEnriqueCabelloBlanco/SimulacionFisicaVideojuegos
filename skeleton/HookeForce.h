@@ -9,9 +9,9 @@ public:
     HookeForce(const Vector3& pivotPos,SolidoRigido*asignedParticle, double k,double l);
     virtual void update(double dt);
     
-    ~HookeForce();
+    virtual ~HookeForce();
 
-private:
+protected:
     SolidoRigido* particeRb = nullptr;
     //particula a la que aplicar el muelle
     Particle* particleToAplie = nullptr;

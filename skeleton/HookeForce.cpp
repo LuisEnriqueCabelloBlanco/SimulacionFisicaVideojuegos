@@ -9,6 +9,7 @@ particleToAplie(asignedParticle), k(k), l_0(l),hookPoint(pivotPos)
 	geom.box.y = 0.5;
 	geom.box.z = 0.5;
 	reference = new Particle(hookPoint, geom, 0, 0, Color(1, 0, 1, 1));
+	condS = [this](SolidoRigido* rb) {return l_0 >  (rb->getPose()-hookPoint).magnitude(); };
 }
 
 HookeForce::HookeForce(const Vector3& pivotPos, SolidoRigido* asignedParticle, double k, double l):ForceGenerator(nullptr),
