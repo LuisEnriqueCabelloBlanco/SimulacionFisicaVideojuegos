@@ -48,7 +48,7 @@ public:
 
 	physx::PxScene* getScene()const { return gScene; }
 
-	void createWeb(Vector3 position);
+	void createWeb(Vector3 position,bool type);
 private:
 	/// <summary>
 	/// makes the spheres representing the reference axis

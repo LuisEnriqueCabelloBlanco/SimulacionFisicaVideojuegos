@@ -4,7 +4,7 @@ class SpiderSling :
     public HookeForce
 {
 public:
-    SpiderSling(Vector3 pos, physx::PxReal decaySpeed,SolidoRigido* par);
+    SpiderSling(Vector3 pos, physx::PxReal decaySpeed,SolidoRigido* par,double k);
     ~SpiderSling();
 
     virtual void update(double dt) override;

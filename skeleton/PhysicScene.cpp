@@ -84,12 +84,19 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
-	case 'Q': {
+	case 'X': {
 
-		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this,gScene);
+		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this,gScene,true);
 
 		break;
 	}
+	case 'Z': {
+
+		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this, gScene,false);
+
+		break;
+	}
+
 	case 'W': {
 		Vector3 aux = Vector3(GetCamera()->getDir().x, sol->getVelocity().y, GetCamera()->getDir().z).getNormalized() * 10;
 
@@ -142,7 +149,7 @@ void PhysicScene::initScene()
 
 
 	//edifisi
-	PxTransform pose2(Vector3(0, 10, -20));
+	PxTransform pose2(Vector3(0, 20, -20));
 	PxRigidStatic* statico2 = gPhysics->createRigidStatic(pose2);
 	PxShape* s2 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
 	statico2->attachShape(*s2);
@@ -309,11 +316,13 @@ void PhysicScene::updateScene(double dt)
 	}
 }
 
-void PhysicScene::createWeb(Vector3 position)
+void PhysicScene::createWeb(Vector3 position, bool type)
 {
 	if (hook != nullptr) {
 		delete hook;
 	}
-
-	hook = new SpiderSling(position,exp(-(position - sol->getPose()).magnitude()), sol);
+	if(type)
+		hook = new SpiderSling(position,0.5, sol,200);
+	else
+		hook = new SpiderSling(position,0.1, sol,70);
 }
