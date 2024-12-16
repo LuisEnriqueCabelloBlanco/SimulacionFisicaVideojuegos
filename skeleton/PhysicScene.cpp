@@ -91,14 +91,14 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'W': {
-		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 8;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, sol->getVelocity().y, GetCamera()->getDir().z).getNormalized() * 10;
 
 		//sol->addForce(aux);
 		sol->setVelocity(aux);
 		break;
 	}
 	case 'S':{
-		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 8;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, -sol->getVelocity().y, GetCamera()->getDir().z).getNormalized() * 10;
 
 		//sol->addForce(aux);
 		sol->setVelocity(-aux);
@@ -139,6 +139,15 @@ void PhysicScene::initScene()
 	RenderItem* obj1 = new RenderItem(s1, statico1, Color(1, 1, 0, 1));
 	gScene->addActor(*statico1);
 
+
+
+	//edifisi
+	PxTransform pose2(Vector3(0, 10, -20));
+	PxRigidStatic* statico2 = gPhysics->createRigidStatic(pose2);
+	PxShape* s2 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
+	statico2->attachShape(*s2);
+	RenderItem* obj2 = new RenderItem(s2, statico2, Color(1, 1, 0, 1));
+	gScene->addActor(*statico2);
 
 	//Main Character
 	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(10, 10, 0), geom, gPhysics, gScene,0,Color(1,1,1,0))));
@@ -306,5 +315,5 @@ void PhysicScene::createWeb(Vector3 position)
 		delete hook;
 	}
 
-	hook = new SpiderSling(position,0.5,sol);
+	hook = new SpiderSling(position,exp(-(position - sol->getPose()).magnitude()), sol);
 }

@@ -254,7 +254,8 @@ void cleanupPhysics(bool interactive)
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	
+	cooking->release();
+
 	gFoundation->release();
 	delete parGen;
 	}
