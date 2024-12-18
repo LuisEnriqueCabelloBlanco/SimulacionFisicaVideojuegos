@@ -6,23 +6,18 @@
 #include "SolidoRigido.h"
 #include "GravityGenerator.h"
 #include "WindGenerator.h"
+#include "WhirlwindGenerator.h"
 #include "GeneradorSolidoRigido.h"
 #include "HookeForce.h"
 #include "SpiderWeb.h"
 #include "SpiderSling.h"
 #include <string>
 
+
+
 PhysicScene::PhysicScene()
 {
 
-}
-PhysicScene::PhysicScene(double simulatedSpeed, double realSpeed):gravityValue(-9.8)
-{
-	speedSimulatinFactor = simulatedSpeed/realSpeed;
-	gravitySimulationFactor = pow(speedSimulatinFactor,2);
-	massSimulationFactor = pow((realSpeed / simulatedSpeed),2);
-
-	gravityValue *= gravitySimulationFactor;
 }
 PhysicScene::PhysicScene(PxPhysics* px,const PxSceneDesc& desc)
 {
@@ -48,6 +43,16 @@ PhysicScene::~PhysicScene()
 	for (auto f : forces) {
 		delete f;
 	}
+
+	for (auto s : muelles) {
+		delete s;
+	}
+
+	for (auto rb : solidosRigidos) {
+		delete rb;
+	}
+
+	delete grav;
 
 	gScene->release();
 }
@@ -84,28 +89,15 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		pr->accelerate(Vector3(0, gravityValue, 0));
 		break;
 	}
-	case 'X': {
-
-		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this,gScene,true);
-
-		break;
-	}
-	case 'Z': {
-
-		new SpiderWeb(camera.p, GetCamera()->getDir() * 50, this, gScene,false);
-
-		break;
-	}
-
 	case 'W': {
-		Vector3 aux = Vector3(GetCamera()->getDir().x, sol->getVelocity().y, GetCamera()->getDir().z).getNormalized() * 10;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 10;
 
 		//sol->addForce(aux);
 		sol->setVelocity(aux);
 		break;
 	}
 	case 'S':{
-		Vector3 aux = Vector3(GetCamera()->getDir().x, -sol->getVelocity().y, GetCamera()->getDir().z).getNormalized() * 10;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 10;
 
 		//sol->addForce(aux);
 		sol->setVelocity(-aux);
@@ -118,6 +110,8 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 }
 void PhysicScene::initScene()
 {
+	std::cout << "Iniciando Escena ...\n";
+
 	makeAxis(20,0.5);
 
 	GeometrySpec geom;
@@ -137,54 +131,43 @@ void PhysicScene::initScene()
 	RenderItem* obj = new RenderItem(s, statico, Color(1, 1, 1, 0.5));
 	gScene->addActor(*statico);
 
+	buildStatic(Vector3(0, 10, 20), Vector3(20, 10, 5), gPhysics, gScene, Color(0.2, 1, 0, 0.2));
 
-	//edifisi
-	PxTransform pose1(Vector3(0, 10, 20));
-	PxRigidStatic* statico1 = gPhysics->createRigidStatic(pose1);
-	PxShape* s1 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
-	statico1->attachShape(*s1);
-	RenderItem* obj1 = new RenderItem(s1, statico1, Color(1, 1, 0, 1));
-	gScene->addActor(*statico1);
-
-
-
-	//edifisi
-	PxTransform pose2(Vector3(0, 20, -20));
-	PxRigidStatic* statico2 = gPhysics->createRigidStatic(pose2);
-	PxShape* s2 = CreateShape(PxBoxGeometry(20, 10, 5), floorMaterial);
-	statico2->attachShape(*s2);
-	RenderItem* obj2 = new RenderItem(s2, statico2, Color(1, 1, 0, 1));
-	gScene->addActor(*statico2);
+	buildStatic(Vector3(0, 15, -20), Vector3(20, 30, 5), gPhysics, gScene, Color(1, 1, 0, 1));
 
 	//Main Character
 	solidosRigidos.push_back((sol = new SolidoRigido(Vector3(10, 10, 0), geom, gPhysics, gScene,0,Color(1,1,1,0))));
 	sol->unrender();
-	sol->getRigid()->setName("Manuel");
+	sol->getRigid()->setName("Spoderman");
 	sol->getRigid()->setMassSpaceInertiaTensor(Vector3(0, 0, 0));
-	sol->getRigid()->setMass(70);
-	//Build rain
+	sol->getRigid()->setMass(933);
+	
 
-	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 5,10 },{0.01,0.3}));
-	GeometrySpec parGeom;
-	parGeom.shape = SPHERE;
-	parGeom.sphere.radious = 0.05;
-
-	generators.front()->setShape(parGeom);
-	generators.front()->setParticleColor(Color(0,0,0.5,0.1));
-	generators.front()->setParticlesPerSpawn(100);
-	generators.front()->setMassInverse(0.02);
-	generators.front()->setInitialPos(Vector3(10, 30, 0));
-	generators.front()->setInitalPosVar(Vector3(-10, -5, -10), Vector3(10, 0, 10));
-	generators.front()->setParticlesAliveCond([](SolidoRigido* rb) {return rb->getPose().y > -1; });
-	generators.front()->setInitialVel(Vector3(0, 10, 0), Vector3(0, 20, 0));
-	generators.front()->addForceGen(new WindGenerator(this, Vector3(5, 0, 0), 0.03, 0, Vector3(0, 0, 0), Vector3(1000)));
-
-	addForce(new GravityGenerator(this));
-	WindGenerator* wind;
+	//air resistance
 	addForce(new WindGenerator(this, Vector3(0), 0.03, 0, Vector3(0, 500, 0), Vector3(1000)));
-	addForce(new WindGenerator(this, Vector3(10,0,0), 0.03, 0, Vector3(0, 0, 0), Vector3(1000)));
-	//addForce(new HookeForce(Vector3(20,20,10),sol,4,5));
+	//Wind Force
+	addForce(new WindGenerator(this, Vector3(5,0,0), 0.03, 0, Vector3(0, 25, 0), Vector3(50)));
 
+	Vector3 center(45, 30, 0);
+	Vector3 extent(20, 60, 20);
+
+	WhirlwindGenerator* torn = new WhirlwindGenerator(this, 0, 0.01, center, extent,1.8, 5);
+	addForce(torn);
+
+	tornadoGenerator = new GeneradorParticulas<>({ 3,12 }, {0.1,0.5});
+	tornadoGenerator->setParticlesPerSpawn(10);
+	tornadoGenerator->setInitalPosVar(Vector3(-2, 0 ,-2), Vector3(2, 2,2));
+	tornadoGenerator->setMassInverse(900);
+	tornadoGenerator->setInitialPos(center-Vector3(0,center.y-1,0));
+	tornadoGenerator->setInitialVel(Vector3(0), Vector3(0));
+	tornadoGenerator->addForceGen(torn);
+	tornadoGenerator->addForceGen((grav=new GravityGenerator(nullptr)));
+
+	makeRain();
+
+	//rend->transform->p = Vector3(0, 30, -40);
+	//addForce(new HookeForce(Vector3(20,20,10),sol,4,5));
+	
 }
 
 Particle* PhysicScene::addParticle(const Vector3& pos,const GeometrySpec& geom,double massInv,double damping,const Color& color)
@@ -305,15 +288,21 @@ void PhysicScene::updateScene(double dt)
 		gen->update(dt);
 	}
 
+	tornadoGenerator->update(dt);
 
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
 	//first person camera
 	GetCamera()->setEye(sol->getPose()+Vector3(0,3,0));
 
+	tornadoGenerator->clearParticles();
+
 	for (auto gen : generators) {
 		gen->clearParticles();
 	}
+
+	display_text = "Posicion jugador " + std::to_string(sol->getPose().y)
+		+"\nGravedad:"+std::to_string(gScene->getGravity().y);
 }
 
 void PhysicScene::createWeb(Vector3 position, bool type)
@@ -322,7 +311,55 @@ void PhysicScene::createWeb(Vector3 position, bool type)
 		delete hook;
 	}
 	if(type)
-		hook = new SpiderSling(position,0.5, sol,200);
+		hook = new SpiderSling(position,0.5, sol,1400);
 	else
-		hook = new SpiderSling(position,0.1, sol,70);
+
+		hook = new SpiderSling(position,0.1, sol,700);
+}
+
+void PhysicScene::buildStatic(Vector3 pos, Vector3 ext, PxPhysics* ph, PxScene* sc, const Color& col)
+{
+	PxTransform pose(pos);
+	PxRigidStatic* statico = ph->createRigidStatic(pose);
+	PxShape* s = CreateShape(PxBoxGeometry(ext));
+	statico->attachShape(*s);
+	RenderItem* obj = new RenderItem(s, statico, col);
+	sc->addActor(*statico);
+}
+
+void PhysicScene::mouseButton(int button, int state)
+{
+	switch (button)
+	{
+	case 0:
+		if(!state) new SpiderWeb(GetCamera()->getEye(), GetCamera()->getDir() * 70, this, gScene, true);
+		break;
+	case 2:
+		if(!state) new SpiderWeb(GetCamera()->getEye(), GetCamera()->getDir() * 50, this, gScene, false);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void PhysicScene::makeRain()
+{
+	//Build rain
+
+	generators.push_back(new GeneradorSolidoRigido<>(gScene, { 5,7 }, { 0.01,0.3 }));
+	GeometrySpec parGeom;
+	parGeom.shape = SPHERE;
+	parGeom.sphere.radious = 0.2;
+
+	generators.front()->setShape(parGeom);
+	generators.front()->setParticleColor(Color(0, 0, 0.5, 1));
+	generators.front()->setParticlesPerSpawn(10);
+	generators.front()->setMassInverse(1);
+	generators.front()->setInitialPos(Vector3(10, 60, 0));
+	generators.front()->setInitalPosVar(Vector3(-10, 0, -10), Vector3(10, 5, 10));
+	generators.front()->setParticlesAliveCond([](SolidoRigido* rb) {return rb->getPose().y > -1; });
+	generators.front()->setInitialVel(Vector3(0, 0, 0), Vector3(0, 0, 0));
+	generators.front()->addForceGen(new WindGenerator(this, Vector3(5, 0, 1), 0.03, 0, Vector3(0, 0, 0), Vector3(1000)));
+	generators.front()->addForceGen(forces.back());
 }

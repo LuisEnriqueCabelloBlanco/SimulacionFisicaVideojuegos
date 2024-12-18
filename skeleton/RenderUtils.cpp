@@ -12,6 +12,7 @@ extern void initPhysics(bool interactive);
 extern void stepPhysics(bool interactive, double t);	
 extern void cleanupPhysics(bool interactive);
 extern void keyPress(unsigned char key, const PxTransform& camera);
+extern void mouseButtons(int button, int state);
 extern PxPhysics* gPhysics;
 extern PxMaterial* gMaterial;
 
@@ -68,6 +69,8 @@ void keyboardCallback(unsigned char key, int x, int y)
 void mouseCallback(int button, int state, int x, int y)
 {
 	sCamera->handleMouse(button, state, x, y);
+	//std::cout << button <<" " << state<<"\n";
+	mouseButtons(button,state);
 }
 
 void idleCallback()
@@ -143,7 +146,7 @@ void renderLoop()
 	StartCounter();
 	sCamera = new Camera(PxVec3(50.0f, 50.0f, 50.0f), PxVec3(-0.6f,-0.2f,-0.7f));
 
-	setupDefaultWindow("Simulacion Fisica Videojuegos");
+	setupDefaultWindow("SpiderJuego");
 	setupDefaultRenderState();
 
 	glutIdleFunc(idleCallback);

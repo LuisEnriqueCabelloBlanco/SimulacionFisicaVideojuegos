@@ -1,7 +1,7 @@
 #include "SpiderSling.h"
 
 SpiderSling::SpiderSling(Vector3 pos, physx::PxReal decaySpeed, SolidoRigido* par,double k) :
-	HookeForce(pos, par, k, 0.5),decay(decaySpeed)
+	HookeForce(pos, par, k, 0.3),decay(decaySpeed)
 {
 
 }

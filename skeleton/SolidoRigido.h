@@ -19,7 +19,7 @@ public:
 	bool getAlive()const { return alive; }
 
 	void setDeathFunc(const std::function<bool(SolidoRigido* p)>& f) { aliveCond = f; }
-	void setMass(physx::PxReal mass) { rigid->setMass(mass); }
+	void setMass(physx::PxReal mass) { physx::PxRigidBodyExt::updateMassAndInertia(*rigid, mass); }
 	void setVelocity(Vector3 vel) { rigid->setLinearVelocity(vel); }
 	void unrender() { mRenderItem->release(); }
 

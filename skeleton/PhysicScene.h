@@ -8,6 +8,7 @@
 #include "SolidoRigido.h"
 #include "DualHookForce.h"
 #include "GeneradorSolidoRigido.h"
+#include "GeneradorParticulas.h"
 
 using ObjectsList = std::list<Particle*>;
 using ObjectListIt = std::list<Particle*>::iterator;
@@ -15,11 +16,12 @@ using ObjectListIt = std::list<Particle*>::iterator;
 class Proyectile;
 class HookeForce;
 
+extern std::string display_text;
+
 class PhysicScene: public physx::PxSimulationEventCallback
 {
 public:
 	PhysicScene();
-	PhysicScene(double simulatedSpeed, double realSpeed);
 	PhysicScene(PxPhysics* px,const PxSceneDesc& desc);
 	virtual ~PhysicScene();
 
@@ -49,6 +51,13 @@ public:
 	physx::PxScene* getScene()const { return gScene; }
 
 	void createWeb(Vector3 position,bool type);
+
+	void buildStatic(Vector3 pos,Vector3 ext,PxPhysics* ph,PxScene* sc,const Color& col);
+
+	void mouseButton(int button, int state);
+
+	void makeRain();
+
 private:
 	/// <summary>
 	/// makes the spheres representing the reference axis
@@ -72,6 +81,9 @@ private:
 	std::list<ObjectListIt> toDelete;
 	std::list<GeneradorSolidoRigido<>*> generators;
 
+	GeneradorParticulas<>* tornadoGenerator;
+	
+
 	//reference objects
 	Particle* c;
 	Particle* x;
@@ -83,8 +95,9 @@ private:
 	SolidoRigido* sol;
 	HookeForce* hook = nullptr;
 
-	PxMaterial* floorMaterial = NULL;
+	ForceGenerator* grav;
 
+	PxMaterial* floorMaterial = NULL;
 	// Heredado vía PxSimulationEventCallback
 	void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) override;
 	void onWake(PxActor** actors, PxU32 count) override;

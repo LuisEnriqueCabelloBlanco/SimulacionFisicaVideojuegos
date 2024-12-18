@@ -29,6 +29,7 @@
 
 #include "Render.h"
 #include <assert.h>
+#include <iostream>
 
 using namespace physx;
 
@@ -232,7 +233,7 @@ void renderGeometry(const PxGeometryHolder& h, bool wireframe =false)
 namespace Snippets
 {
 
-namespace
+namespace 
 {
 void reshapeCallback(int width, int height)
 {
@@ -264,9 +265,10 @@ void setupDefaultRenderState()
 	glClearColor(0.3f, 0.4f, 0.5f, 1.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 
 	// Setup lighting
 	glEnable(GL_LIGHTING);
@@ -284,11 +286,12 @@ void setupDefaultRenderState()
 
 void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNear, PxReal clipFar)
 {
+	//std::cout << "Render\n";
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Display text
 	glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-	drawText(display_text, 0, 0);
+	drawText(display_text, 5, 20);
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);
@@ -301,9 +304,6 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 
 	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
 
-	//Activate trasparency
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	assert(glGetError() == GL_NO_ERROR);
 }

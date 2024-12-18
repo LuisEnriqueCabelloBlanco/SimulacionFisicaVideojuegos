@@ -21,7 +21,7 @@ template<typename RanPos = std::uniform_real_distribution<double>,
 public:
 
 	GeneradorSolidoRigido(PxScene* pScene,std::pair<double, double> liveTime, std::pair<double, double> randGentime = { 1.0,1.0 }) :
-		uRandGenTime(randGentime.first, randGentime.second), uRandLiveTime(liveTime.first, liveTime.second), uRandMassInverse(0, 0.1) {
+		uRandGenTime(randGentime.first, randGentime.second), uRandLiveTime(liveTime.first, liveTime.second), uRandMassInverse(0, 0.03) {
 		currentTime = 0;
 		nextSpawnTime = particleRate;
 		particlesAliveCond = [](SolidoRigido* p) {return true; };
@@ -95,11 +95,10 @@ protected:
 	{
 		SolidoRigido* rb = new SolidoRigido(basePosition + position(), particleShape, &scene->getPhysics(), scene,uRandLiveTime(gen),pColor);
 
-		rb->setMass(mass+uRandMassInverse(gen));
+		rb->setMass(mass/*+uRandMassInverse(gen)*/);
 		rb->setDeathFunc(particlesAliveCond);
 		rb->setVelocity(initVel());
 		rb->getRigid()->setName("Particula");
-
 		mParticles.push_back(rb);
 	}
 

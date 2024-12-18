@@ -1,5 +1,6 @@
 #include "SolidoRigido.h"
 #include <iostream>
+#include <PxRigidBody.h>
 
 SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px, physx::PxScene* scene,double livetime,Vector4 color):
 	mScene(scene),livetime(livetime)
@@ -30,6 +31,7 @@ SolidoRigido::SolidoRigido(Vector3 pos, GeometrySpec& geom, physx::PxPhysics* px
 	rigid->attachShape(*pShape);
 	mRenderItem = new RenderItem(pShape, rigid, color);
 	mScene->addActor(*rigid);
+	physx::PxRigidBodyExt::updateMassAndInertia(*rigid, 1);
 	aliveCond = [this](SolidoRigido* rb) {return true;};
 }
 

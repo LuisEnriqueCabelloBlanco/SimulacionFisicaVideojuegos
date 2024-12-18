@@ -30,6 +30,7 @@ public:
 		geom.shape = SPHERE;
 		geom.sphere.radious = 1;
 		setShape(geom);
+		initVel.setRandom(Vector3(0), Vector3(0));
 	}
 
 
@@ -99,6 +100,7 @@ protected:
 	{
 		Particle* pr = new Particle(basePosition + position(), particleShape, massInverse /*+ uRandMassInverse(gen)*/, 0.8, pColor, uRandLiveTime(gen));
 		//pr->accelerate(Vector3(0, -9.8, 0));
+
 		pr->setDeathFunc(particlesAliveCond);
 		pr->setVel(initVel());
 

@@ -8,6 +8,7 @@ public:
     {
         boxBouds = PxBounds3::centerExtents(center, extent);
         cond = [this](Particle* p) {return boxBouds.contains(p->getPos()); };
+        condS = [this](SolidoRigido* p) {return boxBouds.contains(p->getPose()); };
     };
 
     WindGenerator(PhysicScene* pS, Vector3 wSpd, double k1, double k2):ForceGenerator(pS) {

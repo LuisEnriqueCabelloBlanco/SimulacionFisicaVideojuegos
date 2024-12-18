@@ -318,6 +318,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//}
 }
 
+void mouseButtons(int button , int state) {
+	mPS->mouseButton(button,state);
+}
+
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	PX_UNUSED(actor1);
