@@ -52,6 +52,8 @@ PhysicScene::~PhysicScene()
 		delete rb;
 	}
 
+	delete tornadoGenerator;
+	delete fuente;
 	delete grav;
 
 	gScene->release();
@@ -90,17 +92,17 @@ void PhysicScene::keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'W': {
-		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 10;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 9000;
 
-		//sol->addForce(aux);
-		sol->setVelocity(aux);
+		sol->addForce(aux);
+		//sol->setVelocity(aux);
 		break;
 	}
 	case 'S':{
-		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 10;
+		Vector3 aux = Vector3(GetCamera()->getDir().x, 0, GetCamera()->getDir().z).getNormalized() * 9000;
 
-		//sol->addForce(aux);
-		sol->setVelocity(-aux);
+		sol->addForce(aux);
+		//sol->setVelocity(-aux);
 		break;
 	}
 	default:
@@ -140,7 +142,8 @@ void PhysicScene::initScene()
 	sol->unrender();
 	sol->getRigid()->setName("Spoderman");
 	sol->getRigid()->setMassSpaceInertiaTensor(Vector3(0, 0, 0));
-	sol->getRigid()->setMass(933);
+	sol->getRigid()->setMass(75);
+	sol->getRigid()->setLinearDamping(0.3);
 	
 
 	//air resistance
@@ -164,6 +167,15 @@ void PhysicScene::initScene()
 	tornadoGenerator->addForceGen((grav=new GravityGenerator(nullptr)));
 
 	makeRain();
+
+
+	fuente = new GeneradorParticulas<>({ 1,3 }, { 0.5,1 });
+	fuente->setParticlesPerSpawn(2);
+	fuente->setInitalPosVar(Vector3(-2, 0, -2), Vector3(2, 2, 2));
+	fuente->setMassInverse(900);
+	fuente->setInitialPos(Vector3(-40, 0, 0));
+	fuente->setInitialVel(Vector3(-3,3,-3), Vector3(3,10,3));
+	fuente->addForceGen(grav);
 
 	//rend->transform->p = Vector3(0, 30, -40);
 	//addForce(new HookeForce(Vector3(20,20,10),sol,4,5));
@@ -289,6 +301,7 @@ void PhysicScene::updateScene(double dt)
 	}
 
 	tornadoGenerator->update(dt);
+	fuente->update(dt);
 
 	gScene->simulate(dt);
 	gScene->fetchResults(true);
@@ -296,13 +309,15 @@ void PhysicScene::updateScene(double dt)
 	GetCamera()->setEye(sol->getPose()+Vector3(0,3,0));
 
 	tornadoGenerator->clearParticles();
+	fuente->clearParticles();
+
 
 	for (auto gen : generators) {
 		gen->clearParticles();
 	}
 
-	display_text = "Posicion jugador " + std::to_string(sol->getPose().y)
-		+"\nGravedad:"+std::to_string(gScene->getGravity().y);
+	//display_text = "Posicion jugador " + std::to_string(sol->getPose().y)
+	//	+"\nGravedad:"+std::to_string(gScene->getGravity().y);
 }
 
 void PhysicScene::createWeb(Vector3 position, bool type)
@@ -311,10 +326,10 @@ void PhysicScene::createWeb(Vector3 position, bool type)
 		delete hook;
 	}
 	if(type)
-		hook = new SpiderSling(position,0.5, sol,1400);
+		hook = new SpiderSling(position,0.5, sol,160);
 	else
 
-		hook = new SpiderSling(position,0.1, sol,700);
+		hook = new SpiderSling(position,0.1, sol,70);
 }
 
 void PhysicScene::buildStatic(Vector3 pos, Vector3 ext, PxPhysics* ph, PxScene* sc, const Color& col)

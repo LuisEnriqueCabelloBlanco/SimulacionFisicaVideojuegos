@@ -82,7 +82,7 @@ private:
 	std::list<GeneradorSolidoRigido<>*> generators;
 
 	GeneradorParticulas<>* tornadoGenerator;
-	
+	GeneradorParticulas<>* fuente;
 
 	//reference objects
 	Particle* c;
